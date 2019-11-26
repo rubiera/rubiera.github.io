@@ -1,0 +1,2142 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Antonio Rubiera" />
+
+
+<title>NOAA Storm Data Analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Selected Projects</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-gear"></span>
+     
+    Coursera R Projects
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="c5-NOAA.html">NOAA Storm Data Analysis</a>
+    </li>
+    <li>
+      <a href="c8-models.html">Machine Learning for Workout Activities</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">NOAA Storm Data Analysis</h1>
+<h4 class="author">Antonio Rubiera</h4>
+<h4 class="date">9/30/2019</h4>
+
+</div>
+
+
+<div id="sypnosis" class="section level2">
+<h2>Sypnosis</h2>
+<p>We analyze the storm data available from NOAA for the years 1950-2011. The data as loaded requires filtering for columns we will not use and several transformations. In our first transformation, we select the year for each observation out of a string, and later perform an inflation adjustment for the financial costs by year using the website [<a href="https://www.usinflationcalculator.com/" class="uri">https://www.usinflationcalculator.com/</a>]. We perform transformations into new columns that capture the sum of fatalities and injuries, and the sum of financial damage to property and crops. To get to the sum of financial damage to property and crops, we fist change the exponent for property (PROPDMGEXP) and crop (CROPDMGEXP) damage from a letter, any other character, or blank to a number. We use this number as the product to multiply the respective base (PROPDMG, CROPDMG) costs by. . We perform an outlier analysis of the fatalities and the sum of financial damage to property and crops, and make corrections to the data for the latter. We recode the event type (EVTYPE) to eight categories from hundreds of descriptions found in the data. Finally, we sum the data for each year and each category and plot the result for fatalities and injuries, and the sum of financial damage to property and crops.</p>
+</div>
+<div id="data-processing" class="section level2">
+<h2>Data Processing</h2>
+<p>We use the following R libraries.</p>
+<pre class="r"><code>library(data.table)
+library(R.utils)
+library(tidyverse)
+library(ggplot2)
+library(knitr)</code></pre>
+<div id="data-load." class="section level3">
+<h3>Data load.</h3>
+<p>We use data.table’s fread to load the data. This dataset has 902,247 observations in 37 columns.</p>
+<pre class="r"><code>StormDataDT &lt;- fread(&quot;./data/repdata_data_StormData.csv.bz2&quot;)
+head(StormDataDT)</code></pre>
+<pre><code>##    STATE__           BGN_DATE BGN_TIME TIME_ZONE COUNTY COUNTYNAME STATE
+## 1:       1  4/18/1950 0:00:00     0130       CST     97     MOBILE    AL
+## 2:       1  4/18/1950 0:00:00     0145       CST      3    BALDWIN    AL
+## 3:       1  2/20/1951 0:00:00     1600       CST     57    FAYETTE    AL
+## 4:       1   6/8/1951 0:00:00     0900       CST     89    MADISON    AL
+## 5:       1 11/15/1951 0:00:00     1500       CST     43    CULLMAN    AL
+## 6:       1 11/15/1951 0:00:00     2000       CST     77 LAUDERDALE    AL
+##     EVTYPE BGN_RANGE BGN_AZI BGN_LOCATI END_DATE END_TIME COUNTY_END
+## 1: TORNADO         0                                               0
+## 2: TORNADO         0                                               0
+## 3: TORNADO         0                                               0
+## 4: TORNADO         0                                               0
+## 5: TORNADO         0                                               0
+## 6: TORNADO         0                                               0
+##    COUNTYENDN END_RANGE END_AZI END_LOCATI LENGTH WIDTH F MAG FATALITIES
+## 1:         NA         0                      14.0   100 3   0          0
+## 2:         NA         0                       2.0   150 2   0          0
+## 3:         NA         0                       0.1   123 2   0          0
+## 4:         NA         0                       0.0   100 2   0          0
+## 5:         NA         0                       0.0   150 2   0          0
+## 6:         NA         0                       1.5   177 2   0          0
+##    INJURIES PROPDMG PROPDMGEXP CROPDMG CROPDMGEXP WFO STATEOFFIC ZONENAMES
+## 1:       15    25.0          K       0                                    
+## 2:        0     2.5          K       0                                    
+## 3:        2    25.0          K       0                                    
+## 4:        2     2.5          K       0                                    
+## 5:        2     2.5          K       0                                    
+## 6:        6     2.5          K       0                                    
+##    LATITUDE LONGITUDE LATITUDE_E LONGITUDE_ REMARKS REFNUM
+## 1:     3040      8812       3051       8806              1
+## 2:     3042      8755          0          0              2
+## 3:     3340      8742          0          0              3
+## 4:     3458      8626          0          0              4
+## 5:     3412      8642          0          0              5
+## 6:     3450      8748          0          0              6</code></pre>
+</div>
+<div id="filtering-data-into-a-working-dataset." class="section level3">
+<h3>Filtering data into a working dataset.</h3>
+<p>We filter columns we need for our analysis.</p>
+<pre class="r"><code>StormDataDT_recode &lt;- StormDataDT[,
+    c(&quot;REFNUM&quot;,&quot;BGN_DATE&quot;,&quot;EVTYPE&quot;,&quot;FATALITIES&quot;,&quot;INJURIES&quot;, 
+      &quot;PROPDMG&quot;,&quot;PROPDMGEXP&quot;,&quot;CROPDMG&quot;,&quot;CROPDMGEXP&quot;)]
+head(StormDataDT_recode)</code></pre>
+<pre><code>##    REFNUM           BGN_DATE  EVTYPE FATALITIES INJURIES PROPDMG
+## 1:      1  4/18/1950 0:00:00 TORNADO          0       15    25.0
+## 2:      2  4/18/1950 0:00:00 TORNADO          0        0     2.5
+## 3:      3  2/20/1951 0:00:00 TORNADO          0        2    25.0
+## 4:      4   6/8/1951 0:00:00 TORNADO          0        2     2.5
+## 5:      5 11/15/1951 0:00:00 TORNADO          0        2     2.5
+## 6:      6 11/15/1951 0:00:00 TORNADO          0        6     2.5
+##    PROPDMGEXP CROPDMG CROPDMGEXP
+## 1:          K       0           
+## 2:          K       0           
+## 3:          K       0           
+## 4:          K       0           
+## 5:          K       0           
+## 6:          K       0</code></pre>
+<pre class="r"><code>tail(StormDataDT_recode)</code></pre>
+<pre><code>##    REFNUM           BGN_DATE         EVTYPE FATALITIES INJURIES PROPDMG
+## 1: 902292 11/28/2011 0:00:00 WINTER WEATHER          0        0       0
+## 2: 902293 11/30/2011 0:00:00      HIGH WIND          0        0       0
+## 3: 902294 11/10/2011 0:00:00      HIGH WIND          0        0       0
+## 4: 902295  11/8/2011 0:00:00      HIGH WIND          0        0       0
+## 5: 902296  11/9/2011 0:00:00       BLIZZARD          0        0       0
+## 6: 902297 11/28/2011 0:00:00     HEAVY SNOW          0        0       0
+##    PROPDMGEXP CROPDMG CROPDMGEXP
+## 1:          K       0          K
+## 2:          K       0          K
+## 3:          K       0          K
+## 4:          K       0          K
+## 5:          K       0          K
+## 6:          K       0          K</code></pre>
+<pre class="r"><code>str(StormDataDT_recode)</code></pre>
+<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   902297 obs. of  9 variables:
+##  $ REFNUM    : num  1 2 3 4 5 6 7 8 9 10 ...
+##  $ BGN_DATE  : chr  &quot;4/18/1950 0:00:00&quot; &quot;4/18/1950 0:00:00&quot; &quot;2/20/1951 0:00:00&quot; &quot;6/8/1951 0:00:00&quot; ...
+##  $ EVTYPE    : chr  &quot;TORNADO&quot; &quot;TORNADO&quot; &quot;TORNADO&quot; &quot;TORNADO&quot; ...
+##  $ FATALITIES: num  0 0 0 0 0 0 0 0 1 0 ...
+##  $ INJURIES  : num  15 0 2 2 2 6 1 0 14 0 ...
+##  $ PROPDMG   : num  25 2.5 25 2.5 2.5 2.5 2.5 2.5 25 25 ...
+##  $ PROPDMGEXP: chr  &quot;K&quot; &quot;K&quot; &quot;K&quot; &quot;K&quot; ...
+##  $ CROPDMG   : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ CROPDMGEXP: chr  &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...
+##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+</div>
+<div id="year-recode" class="section level3">
+<h3>Year recode</h3>
+<p>We recode the year out of the BGN_DATE field. We select that column out to strip out the year.</p>
+<pre class="r"><code>BGN_DATE_year &lt;- as.character(StormDataDT_recode$BGN_DATE)
+
+for (i in 1:length(BGN_DATE_year)){
+  BGN_DATE_year[i] &lt;- 
+    unlist(substring(strsplit(BGN_DATE_year[[i]], &quot;/&quot;)[[1]][[3]],1,4))
+}
+
+head(BGN_DATE_year)</code></pre>
+<pre><code>## [1] &quot;1950&quot; &quot;1950&quot; &quot;1951&quot; &quot;1951&quot; &quot;1951&quot; &quot;1951&quot;</code></pre>
+<pre class="r"><code>tail(BGN_DATE_year)</code></pre>
+<pre><code>## [1] &quot;2011&quot; &quot;2011&quot; &quot;2011&quot; &quot;2011&quot; &quot;2011&quot; &quot;2011&quot;</code></pre>
+<pre class="r"><code>length(BGN_DATE_year)</code></pre>
+<pre><code>## [1] 902297</code></pre>
+<p>We bind the stripped year back into the dataset, and check that we still have a data.table data frame.</p>
+<pre class="r"><code>StormDataDT_recode &lt;- cbind(StormDataDT_recode,BGN_DATE_year)
+head(StormDataDT_recode)</code></pre>
+<pre><code>##    REFNUM           BGN_DATE  EVTYPE FATALITIES INJURIES PROPDMG
+## 1:      1  4/18/1950 0:00:00 TORNADO          0       15    25.0
+## 2:      2  4/18/1950 0:00:00 TORNADO          0        0     2.5
+## 3:      3  2/20/1951 0:00:00 TORNADO          0        2    25.0
+## 4:      4   6/8/1951 0:00:00 TORNADO          0        2     2.5
+## 5:      5 11/15/1951 0:00:00 TORNADO          0        2     2.5
+## 6:      6 11/15/1951 0:00:00 TORNADO          0        6     2.5
+##    PROPDMGEXP CROPDMG CROPDMGEXP BGN_DATE_year
+## 1:          K       0                     1950
+## 2:          K       0                     1950
+## 3:          K       0                     1951
+## 4:          K       0                     1951
+## 5:          K       0                     1951
+## 6:          K       0                     1951</code></pre>
+<pre class="r"><code>class(StormDataDT_recode)</code></pre>
+<pre><code>## [1] &quot;data.table&quot; &quot;data.frame&quot;</code></pre>
+</div>
+<div id="propdmgexp-recode." class="section level3">
+<h3>PROPDMGEXP recode.</h3>
+<p>We take a look at the characters found in the property damage exponent (PROPDMGEXP) column.</p>
+<pre class="r"><code>recode_PROPDMGEXP &lt;- StormDataDT_recode[,PROPDMGEXP]
+class(recode_PROPDMGEXP)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<pre class="r"><code>table(recode_PROPDMGEXP)</code></pre>
+<pre><code>## recode_PROPDMGEXP
+##             -      ?      +      0      1      2      3      4      5 
+## 465934      1      8      5    216     25     13      4      4     28 
+##      6      7      8      B      h      H      K      m      M 
+##      4      5      1     40      1      6 424665      7  11330</code></pre>
+<p>We recode these values and check the result.</p>
+<pre class="r"><code>for (i in seq_along(recode_PROPDMGEXP)){
+
+  if(recode_PROPDMGEXP[[i]] == &quot;1&quot;){
+    recode_PROPDMGEXP[[i]] &lt;- 10
+  }
+    
+  if(recode_PROPDMGEXP[[i]] == &quot;&quot; | 
+     recode_PROPDMGEXP[[i]] == &quot;0&quot; |
+     recode_PROPDMGEXP[[i]] == &quot;-&quot; |
+     recode_PROPDMGEXP[[i]] == &quot;?&quot; |
+     recode_PROPDMGEXP[[i]] == &quot;+&quot; |
+     recode_PROPDMGEXP[[i]] == &quot;h&quot; |
+     recode_PROPDMGEXP[[i]] == &quot;H&quot;){
+    recode_PROPDMGEXP[[i]] &lt;- 1
+  }
+
+  if(recode_PROPDMGEXP[[i]] == &quot;2&quot;){
+    recode_PROPDMGEXP[[i]] &lt;- 100
+  }
+  if(recode_PROPDMGEXP[[i]] == &quot;k&quot; | 
+     recode_PROPDMGEXP[[i]] == &quot;K&quot; |
+     recode_PROPDMGEXP[[i]] == &quot;3&quot;){
+    recode_PROPDMGEXP[[i]] &lt;- 1000
+  }
+  if(recode_PROPDMGEXP[[i]] == &quot;4&quot;){
+    recode_PROPDMGEXP[[i]] &lt;- 10000
+  }
+  if(recode_PROPDMGEXP[[i]] == &quot;5&quot;){
+    recode_PROPDMGEXP[[i]] &lt;- 100000
+  }
+  if(recode_PROPDMGEXP[[i]] == &quot;m&quot; | 
+     recode_PROPDMGEXP[[i]] == &quot;M&quot; |
+     recode_PROPDMGEXP[[i]] == &quot;6&quot;){
+    recode_PROPDMGEXP[[i]] &lt;- 1000000
+  }
+  if(recode_PROPDMGEXP[[i]] == &quot;7&quot;){
+    recode_PROPDMGEXP[[i]] &lt;- 10000000
+  }
+  if(recode_PROPDMGEXP[[i]] == &quot;8&quot;){
+    recode_PROPDMGEXP[[i]] &lt;- 100000000
+  }
+  if(recode_PROPDMGEXP[[i]] == &quot;B&quot;){
+    recode_PROPDMGEXP[[i]] &lt;- 1000000000
+  }
+  
+}
+
+table(recode_PROPDMGEXP)</code></pre>
+<pre><code>## recode_PROPDMGEXP
+##      1     10    100   1000  10000  1e+05  1e+06  1e+07  1e+08  1e+09 
+## 466171     25     13 424669      4     28  11341      5      1     40</code></pre>
+</div>
+<div id="cropdmgexp-recode." class="section level3">
+<h3>CROPDMGEXP recode.</h3>
+<p>We take a look at the characters found in the crop damage exponent (CROPDMGEXP) column.</p>
+<pre class="r"><code>recode_CROPDMGEXP &lt;- StormDataDT_recode[,CROPDMGEXP]
+class(recode_CROPDMGEXP)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<pre class="r"><code>table(recode_CROPDMGEXP)</code></pre>
+<pre><code>## recode_CROPDMGEXP
+##             ?      0      2      B      k      K      m      M 
+## 618413      7     19      1      9     21 281832      1   1994</code></pre>
+<p>We recode these values and check the result.</p>
+<pre class="r"><code>for (i in seq_along(recode_CROPDMGEXP)){
+  
+  if(recode_CROPDMGEXP[[i]] == &quot;&quot; | 
+     recode_CROPDMGEXP[[i]] == &quot;0&quot; |
+     recode_CROPDMGEXP[[i]] == &quot;?&quot; ){
+    recode_CROPDMGEXP[[i]] &lt;- 1
+  }
+  
+  if(recode_CROPDMGEXP[[i]] == &quot;2&quot;){
+    recode_CROPDMGEXP[[i]] &lt;- 100
+  }
+  if(recode_CROPDMGEXP[[i]] == &quot;k&quot; | 
+     recode_CROPDMGEXP[[i]] == &quot;K&quot; ){
+    recode_CROPDMGEXP[[i]] &lt;- 1000
+  }
+
+  if(recode_CROPDMGEXP[[i]] == &quot;m&quot; | 
+     recode_CROPDMGEXP[[i]] == &quot;M&quot; ){
+    recode_CROPDMGEXP[[i]] &lt;- 1000000
+  }
+
+  if(recode_CROPDMGEXP[[i]] == &quot;B&quot;){
+    recode_CROPDMGEXP[[i]] &lt;- 1000000000
+  }
+  
+}
+
+table(recode_CROPDMGEXP)</code></pre>
+<pre><code>## recode_CROPDMGEXP
+##      1    100   1000  1e+06  1e+09 
+## 618439      1 281853   1995      9</code></pre>
+</div>
+<div id="propdmgexp-and-cropdmgexp-recodes-incorporated-into-our-dataset." class="section level3">
+<h3>PROPDMGEXP and CROPDMGEXP recodes incorporated into our dataset.</h3>
+<p>We bind the recoded columns into our working dataset (StormDataDT_recode). We test that we still have a data.table data frame and that our sums for numerical columns are indeed numerical.</p>
+<pre class="r"><code>StormDataDT_recode &lt;- cbind(StormDataDT_recode,recode_PROPDMGEXP,recode_CROPDMGEXP)
+head(StormDataDT_recode)</code></pre>
+<pre><code>##    REFNUM           BGN_DATE  EVTYPE FATALITIES INJURIES PROPDMG
+## 1:      1  4/18/1950 0:00:00 TORNADO          0       15    25.0
+## 2:      2  4/18/1950 0:00:00 TORNADO          0        0     2.5
+## 3:      3  2/20/1951 0:00:00 TORNADO          0        2    25.0
+## 4:      4   6/8/1951 0:00:00 TORNADO          0        2     2.5
+## 5:      5 11/15/1951 0:00:00 TORNADO          0        2     2.5
+## 6:      6 11/15/1951 0:00:00 TORNADO          0        6     2.5
+##    PROPDMGEXP CROPDMG CROPDMGEXP BGN_DATE_year recode_PROPDMGEXP
+## 1:          K       0                     1950              1000
+## 2:          K       0                     1950              1000
+## 3:          K       0                     1951              1000
+## 4:          K       0                     1951              1000
+## 5:          K       0                     1951              1000
+## 6:          K       0                     1951              1000
+##    recode_CROPDMGEXP
+## 1:                 1
+## 2:                 1
+## 3:                 1
+## 4:                 1
+## 5:                 1
+## 6:                 1</code></pre>
+<pre class="r"><code>class(StormDataDT_recode)</code></pre>
+<pre><code>## [1] &quot;data.table&quot; &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode$PROPDMG)</code></pre>
+<pre><code>## [1] 10884500</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode$CROPDMG)</code></pre>
+<pre><code>## [1] 1377827</code></pre>
+<p>We take the products from our records and come up with a sum of the total property and crop damage by individual event (REFNUM), and sum fatalities and injuries into an additional column.</p>
+<pre class="r"><code>StormDataDT_recode_totals &lt;- StormDataDT_recode[,
+                             PROPDMG.Total := PROPDMG*as.numeric(recode_PROPDMGEXP)]
+head(StormDataDT_recode_totals)</code></pre>
+<pre><code>##    REFNUM           BGN_DATE  EVTYPE FATALITIES INJURIES PROPDMG
+## 1:      1  4/18/1950 0:00:00 TORNADO          0       15    25.0
+## 2:      2  4/18/1950 0:00:00 TORNADO          0        0     2.5
+## 3:      3  2/20/1951 0:00:00 TORNADO          0        2    25.0
+## 4:      4   6/8/1951 0:00:00 TORNADO          0        2     2.5
+## 5:      5 11/15/1951 0:00:00 TORNADO          0        2     2.5
+## 6:      6 11/15/1951 0:00:00 TORNADO          0        6     2.5
+##    PROPDMGEXP CROPDMG CROPDMGEXP BGN_DATE_year recode_PROPDMGEXP
+## 1:          K       0                     1950              1000
+## 2:          K       0                     1950              1000
+## 3:          K       0                     1951              1000
+## 4:          K       0                     1951              1000
+## 5:          K       0                     1951              1000
+## 6:          K       0                     1951              1000
+##    recode_CROPDMGEXP PROPDMG.Total
+## 1:                 1         25000
+## 2:                 1          2500
+## 3:                 1         25000
+## 4:                 1          2500
+## 5:                 1          2500
+## 6:                 1          2500</code></pre>
+<pre class="r"><code>StormDataDT_recode_totals &lt;- StormDataDT_recode[,
+                             CROPDMG.Total := CROPDMG*as.numeric(recode_CROPDMGEXP)]
+head(StormDataDT_recode_totals)</code></pre>
+<pre><code>##    REFNUM           BGN_DATE  EVTYPE FATALITIES INJURIES PROPDMG
+## 1:      1  4/18/1950 0:00:00 TORNADO          0       15    25.0
+## 2:      2  4/18/1950 0:00:00 TORNADO          0        0     2.5
+## 3:      3  2/20/1951 0:00:00 TORNADO          0        2    25.0
+## 4:      4   6/8/1951 0:00:00 TORNADO          0        2     2.5
+## 5:      5 11/15/1951 0:00:00 TORNADO          0        2     2.5
+## 6:      6 11/15/1951 0:00:00 TORNADO          0        6     2.5
+##    PROPDMGEXP CROPDMG CROPDMGEXP BGN_DATE_year recode_PROPDMGEXP
+## 1:          K       0                     1950              1000
+## 2:          K       0                     1950              1000
+## 3:          K       0                     1951              1000
+## 4:          K       0                     1951              1000
+## 5:          K       0                     1951              1000
+## 6:          K       0                     1951              1000
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total
+## 1:                 1         25000             0
+## 2:                 1          2500             0
+## 3:                 1         25000             0
+## 4:                 1          2500             0
+## 5:                 1          2500             0
+## 6:                 1          2500             0</code></pre>
+<pre class="r"><code>StormDataDT_recode_totals &lt;- StormDataDT_recode[,
+                             Fatalities.and.Injuries := FATALITIES + INJURIES]
+head(StormDataDT_recode_totals)</code></pre>
+<pre><code>##    REFNUM           BGN_DATE  EVTYPE FATALITIES INJURIES PROPDMG
+## 1:      1  4/18/1950 0:00:00 TORNADO          0       15    25.0
+## 2:      2  4/18/1950 0:00:00 TORNADO          0        0     2.5
+## 3:      3  2/20/1951 0:00:00 TORNADO          0        2    25.0
+## 4:      4   6/8/1951 0:00:00 TORNADO          0        2     2.5
+## 5:      5 11/15/1951 0:00:00 TORNADO          0        2     2.5
+## 6:      6 11/15/1951 0:00:00 TORNADO          0        6     2.5
+##    PROPDMGEXP CROPDMG CROPDMGEXP BGN_DATE_year recode_PROPDMGEXP
+## 1:          K       0                     1950              1000
+## 2:          K       0                     1950              1000
+## 3:          K       0                     1951              1000
+## 4:          K       0                     1951              1000
+## 5:          K       0                     1951              1000
+## 6:          K       0                     1951              1000
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1:                 1         25000             0                      15
+## 2:                 1          2500             0                       0
+## 3:                 1         25000             0                       2
+## 4:                 1          2500             0                       2
+## 5:                 1          2500             0                       2
+## 6:                 1          2500             0                       6</code></pre>
+<pre class="r"><code>StormDataDT_recode_totals &lt;- StormDataDT_recode[,
+                             Property.and.Crop.Damage := PROPDMG.Total + CROPDMG.Total]
+head(StormDataDT_recode_totals)</code></pre>
+<pre><code>##    REFNUM           BGN_DATE  EVTYPE FATALITIES INJURIES PROPDMG
+## 1:      1  4/18/1950 0:00:00 TORNADO          0       15    25.0
+## 2:      2  4/18/1950 0:00:00 TORNADO          0        0     2.5
+## 3:      3  2/20/1951 0:00:00 TORNADO          0        2    25.0
+## 4:      4   6/8/1951 0:00:00 TORNADO          0        2     2.5
+## 5:      5 11/15/1951 0:00:00 TORNADO          0        2     2.5
+## 6:      6 11/15/1951 0:00:00 TORNADO          0        6     2.5
+##    PROPDMGEXP CROPDMG CROPDMGEXP BGN_DATE_year recode_PROPDMGEXP
+## 1:          K       0                     1950              1000
+## 2:          K       0                     1950              1000
+## 3:          K       0                     1951              1000
+## 4:          K       0                     1951              1000
+## 5:          K       0                     1951              1000
+## 6:          K       0                     1951              1000
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1:                 1         25000             0                      15
+## 2:                 1          2500             0                       0
+## 3:                 1         25000             0                       2
+## 4:                 1          2500             0                       2
+## 5:                 1          2500             0                       2
+## 6:                 1          2500             0                       6
+##    Property.and.Crop.Damage
+## 1:                    25000
+## 2:                     2500
+## 3:                    25000
+## 4:                     2500
+## 5:                     2500
+## 6:                     2500</code></pre>
+</div>
+<div id="outlier-analysis-for-property-and-crop-damage." class="section level3">
+<h3>Outlier Analysis for property and crop damage.</h3>
+<p>We add up totals for the analysis before we perform the outlier analysis and recodes from it.</p>
+<pre class="r"><code>sum(StormDataDT_recode_totals$FATALITIES)</code></pre>
+<pre><code>## [1] 15145</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_totals$INJURIES)</code></pre>
+<pre><code>## [1] 140528</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_totals$Fatalities.and.Injuries)</code></pre>
+<pre><code>## [1] 155673</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_totals$PROPDMG.Total)</code></pre>
+<pre><code>## [1] 428224866095</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_totals$CROPDMG.Total)</code></pre>
+<pre><code>## [1] 49104192181</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_totals$Property.and.Crop.Damage)</code></pre>
+<pre><code>## [1] 477329058276</code></pre>
+<p>We select the top financial cost events to make sure the values make sense.</p>
+<pre class="r"><code>StormDataDT_recode_large &lt;- StormDataDT_recode_totals[Property.and.Crop.Damage &gt;= 1000000000]
+StormDataDT_recode_large$REFNUM</code></pre>
+<pre><code>##  [1] 187564 194932 194933 194939 198375 207124 211887 243394 298057 347811
+## [11] 366653 398999 444407 485535 488004 525145 529299 529307 529311 529384
+## [21] 529446 564962 569065 569288 577615 577616 577623 581533 581535 581537
+## [31] 598472 605943 639314 739514 739515 808257 834634 859151 860355 862563
+## [41] 867679 867996</code></pre>
+<p>We check each one and come up with a disposition for accepting all of the values, or which values I need to change. We only show here the ones for which we made changes to the data. We also show the narrative for Katrina because these are some of the largest costs in this analysis.</p>
+<p>Disposition: needs changes.</p>
+<p>–75 million and not $5 billion –Property.and.Crop.Damage 50000000 –PROPDMG 75 PROPDMGEXP M recode_PROPDMGEXP 1000000 PROPDMG.Total 75000000 Most of the damage estimates were at least $50 million.<br />
+Some estimates ranged between $80 and $100 million</p>
+<pre class="r"><code>StormDataDT[REFNUM == 187564,REMARKS]</code></pre>
+<pre><code>## [1] &quot;What most called the worst winter storm in Alabama history struck Friday afternoon and lasted until mid-day Saturday.  Snow began falling over north Alabama Friday afternoon, then spread southward overnight, reaching all the way to the Gulf Coast.  The storm was caused by a strong and massive low pressure system that moved from the western Gulf of Mexico into the Florida panhandle, and up the Eastern Seaboard.  The heaviest snow began after midnight when northerly winds of 40 to 55 mph became common.  Frequent lightning discharges occurred for several hours giving an eerie blue-tinged glow to the atmosphere.  By mid-day Saturday snow had accumulated to 6 to 12 inches over North Alabama and 2 to 4 inches at the Gulf Coast.  A 40-mile-wide band of 12 to 20 inches fell from the Birmingham area northeastward to DeKalb and Cherokee counties, generally following the Appalachian Mountains.  High winds combined with the heavy wet snow, felled numerous trees and knocked down power lines over a wide area.  Numerous roads became impassable, and hundreds of thousands of homes were without power.  It was estimated that 400,000 homes were without electricity, and many remained so for several days.  Compounding the snow and power problems, temperatures fell well into the single digits and teens across much of the state Saturday night.  For example, the temperature at the Birmingham Airport fell to 2 degrees, the coldest March temperature ever recorded.  Only 4-wheel drive vehicles could barely maneuver roads, and some roads in north Alabama remained impassable until the following Tuesday.  The snow and high winds knocked many radio and television stations off the air, and severely hampered emergency personnel responding to fires, stranded motorists, and those in dire need of medical attention.  As if the snow, high winds, and extreme cold were not enough, many large trees fell onto homes and businesses.  Numerous awnings, and roofs collapsed under the weight of the heavy snow.  There were at least 14 deaths associated with the exposure or stress due from the storm.  One person froze to death in their home.  Six people died because of abandoned or disabled vehicles.  Seven more people died outside due to exposure.  One of the seven died while waiting in a bus shelter for a bus.  Most of the damage estimates were at least $50 million.  Some estimates ranged between $80 and $100 million.  The following is a categorical list of the sex and ages of some of those who died.  The age and sex of five of the victims was not available. (M172P) (M74O)(M60O)(F82O)(M52O)(F80O)(F72O)(M69O)(M50O) &quot;</code></pre>
+<pre class="r"><code>StormDataDT_recode_large[REFNUM == 187564,
+                      c(&quot;PROPDMG&quot;,&quot;PROPDMGEXP&quot;,&quot;CROPDMG&quot;,&quot;CROPDMGEXP&quot;,
+                        &quot;recode_PROPDMGEXP&quot;, &quot;recode_CROPDMGEXP&quot;, 
+                        &quot;PROPDMG.Total&quot;,&quot;CROPDMG.Total&quot;,&quot;Property.and.Crop.Damage&quot;)]</code></pre>
+<pre><code>##    PROPDMG PROPDMGEXP CROPDMG CROPDMGEXP recode_PROPDMGEXP
+## 1:       5          B       0                        1e+09
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Property.and.Crop.Damage
+## 1:                 1         5e+09             0                    5e+09</code></pre>
+<p>Disposition: needs changes. “Twenty five percent of the states pecan crop will be lost for the next five to ten years at an estimated cost of $5.5 million per year”</p>
+<p>–CROPDMG 55 CROPDMGEXP M recode_CROPDMGEXP 1000000 CROPDMG.Total 55000000 –Property.and.Crop.Damage 55500000</p>
+<pre class="r"><code>StormDataDT[REFNUM == 211887,REMARKS]</code></pre>
+<pre><code>## [1] &quot;During the early morning hours on the 9th, freezing rain began falling over north Mississippi and continued through mid-day on the 10th.  Ice accumulation of three to six inches were common over the affected area. Due to the weight of the ice, power lines, trees and tree limbs were downed.  Many trees fell on houses and automobiles.  The ice storm cause significant damage to approximately 3.7 million  acres of commercial forestland.  The value of damaged timber was estimated to be $1.3 billion.  In addition to the damage of commercial timber was the damage to urban trees, estimated to be $27 million.  Twenty five percent of the states pecan crop will be lost for the next five to ten years at an estimated cost of $5.5 million per year. Nearly 750,000 customers were with out power in the affected area. Customers were without power for up to a month.  Over eight thousand  utility poles were pulled down by the weight of the ice.  Over 4,700 miles of power lines were down. Four-hundred-ninety-one water systems were affected  with around 741,000 customers without water.  Estimates of damage to utilities will run nearly $500 million.  This is the worst ice storm to strike Mississippi since a severe ice storm struck the state in January 1951.  &quot;</code></pre>
+<pre class="r"><code>StormDataDT_recode_large[REFNUM == 211887,
+                         c(&quot;PROPDMG&quot;,&quot;PROPDMGEXP&quot;,&quot;CROPDMG&quot;,&quot;CROPDMGEXP&quot;,
+                           &quot;recode_PROPDMGEXP&quot;, &quot;recode_CROPDMGEXP&quot;, 
+                           &quot;PROPDMG.Total&quot;,&quot;CROPDMG.Total&quot;,&quot;Property.and.Crop.Damage&quot;)]</code></pre>
+<pre><code>##    PROPDMG PROPDMGEXP CROPDMG CROPDMGEXP recode_PROPDMGEXP
+## 1:     500          K       5          B              1000
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Property.and.Crop.Damage
+## 1:             1e+09         5e+05         5e+09               5000500000</code></pre>
+<p>Disposition: seems an over-estimate.</p>
+<p>PROPDMG 100 PROPDMGEXP M recode_PROPDMGEXP 100000000 Property.and.Crop.Damage 100000000</p>
+<pre class="r"><code>StormDataDT[REFNUM == 485535,REMARKS]</code></pre>
+<pre><code>## [1] &quot;Significant flooding occurred throughout Jefferson County.  Doppler radar estimated up to 12 inches of rain fell across the county in a few hours,  with 5 to 8 inches of the total occurring in just one hour.  Especially hard hit were Leeds,  Brookside,  Cardiff,  Fultondale,  Trussville and Birmingham.  Numerous homes across the county were flooded.  At least 120 roadways were impassable.  Several sewage treatment plants were flooded and minor contamination occurred.  Several roadways had pavement removed and then washed away.  Several bridges were damaged. Two Birmingham schools were damaged from flooding.   All the roadways in Leeds and in Brookside were impassable.  Seventy four mobile homes were damaged in the Irondale Trailer Park.  Trussville reported that many municipal buildings,  police cars,  fire trucks,  utility trucks,  and businesses were damaged. YMCA&#39;s Camp Coleman in Trussville had a mudslide that blocked the entrance to the camp. Several bridges in the complex were damaged.  Brookside reported that the city hall and fire department were heavily damaged from the flood waters.  Several area creeks rose to near record levels.  These creeks include Village Creek, Five Mile Creek, and Turkey Creek.  Fast moving water inundated a private school in Birmingham where children were evacuated. Thirteen semi-trailers were washed downstream as Five Mile Creek overflowed.  The water rose higher than the gage itself.  In Graysville, 10 people were rescued from their flooded vehicles and 20 homes were evacuated.  In Fultondale, almost one million dollars of damage occurred to city services.  At least 25 homes and businesses were damaged in Fultondale.  Black Creek Park suffered significant damage to walking trails and ball fields.  In Leeds,  all the roads downtown were temporarily impassable at one point and subsequently closed.  Leeds High School was damaged.  In Gardendale,  several homes were flooded and a bridge was washed out.  In Warrior,  a few homes were flooded and many roads were temporarily impassable.  City Hall suffered minor damage.  In Morris, one manufacturing plant was flooded.  The Town Hall was struck by lightning which caused significant damage to all the electrical systems in the building.  Numerous roads were flooded in Kimberly. \r&quot;</code></pre>
+<pre class="r"><code>StormDataDT_recode_large[REFNUM == 485535,
+                         c(&quot;PROPDMG&quot;,&quot;PROPDMGEXP&quot;,&quot;CROPDMG&quot;,&quot;CROPDMGEXP&quot;,
+                           &quot;recode_PROPDMGEXP&quot;, &quot;recode_CROPDMGEXP&quot;, 
+                           &quot;PROPDMG.Total&quot;,&quot;CROPDMG.Total&quot;,&quot;Property.and.Crop.Damage&quot;)]</code></pre>
+<pre><code>##    PROPDMG PROPDMGEXP CROPDMG CROPDMGEXP recode_PROPDMGEXP
+## 1:       1          B       0          K             1e+09
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Property.and.Crop.Damage
+## 1:              1000         1e+09             0                    1e+09</code></pre>
+<p>Big outlier mistake: “The City of Napa had 600 homes with moderate damage, 150 damaged businesses with costs of at least $70 million.”</p>
+<p>–PROPDMG OK PROPDMGEXP M and not B (BIG DIFFERENCE) –recode_PROPDMGEXP 1000000 –PROPDMG.Total 115000000 –Property.and.Crop.Damage (115+32.5)= 147500000</p>
+<pre class="r"><code>StormDataDT[REFNUM == 605943,REMARKS]</code></pre>
+<pre><code>## [1] &quot;Major flooding continued into the early hours of January 1st, before the Napa River finally fell below flood stage and the water receeded. Flooding was severe in Downtown Napa from the Napa Creek and the City and Parks Department was hit with $6 million in damage alone. The City of Napa had 600 homes with moderate damage, 150 damaged businesses with costs of at least $70 million.&quot;</code></pre>
+<pre class="r"><code>StormDataDT_recode_large[REFNUM == 605943,
+                         c(&quot;PROPDMG&quot;,&quot;PROPDMGEXP&quot;,&quot;CROPDMG&quot;,&quot;CROPDMGEXP&quot;,
+                           &quot;recode_PROPDMGEXP&quot;, &quot;recode_CROPDMGEXP&quot;, 
+                           &quot;PROPDMG.Total&quot;,&quot;CROPDMG.Total&quot;,&quot;Property.and.Crop.Damage&quot;)]</code></pre>
+<pre><code>##    PROPDMG PROPDMGEXP CROPDMG CROPDMGEXP recode_PROPDMGEXP
+## 1:     115          B    32.5          M             1e+09
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Property.and.Crop.Damage
+## 1:             1e+06      1.15e+11      32500000             115032500000</code></pre>
+<p>The second big error in the data</p>
+<p>“The damages of 200 thousand dollars covered both the roof damage as well as money to replace the ruined food” –PROPDMG 200 PROPDMGEXP K recode_PROPDMGEXP 1000 –PROPDMG.Total 200000 Property.and.Crop.Damage 200000</p>
+<pre class="r"><code>StormDataDT[REFNUM == 834634,REMARKS]</code></pre>
+<pre><code>## [1] &quot;EPISODE NARRATIVE: An unusual series of severe storms with damaging winds and hail struck many portions of the Phoenix area during the afternoon and evening hours.EVENT NARRATIVE: This storm moved from Firebird Lake, south of Chandler to the north Glendale/south Peoria area.  This storm produced widespread golf ball to baseball sized hail along its path.  Thousands of roofs and vehicles were damaged by the hail.  Locations in northwest Phoenix and Glendale were impacted by this storm as well as the storm shortly after noon, compounding the damage.  The football coach at Alhambra High School reported at least one injury when large hail struck the practice field. This palm-size hail is likely the largest hail ever reported in the Phoenix area.\nLarge hail, estimated to be upwards of 2 inches in diameter, punctured 34 skylights at the main warehouse of St. Mary&#39;s Food bank in Phoenix. As a result, water ruined approximately 20 percent of the food inventory, the equivalent of 1.4 million meals. Rain soaked the food, which was stored in cardboard boxes. This information was reported by St. Mary&#39;s spokesman Jerry Brown. The damages of 200 thousand dollars covered both the roof damage as well as money to replace the ruined food.&quot;</code></pre>
+<pre class="r"><code>StormDataDT_recode_large[REFNUM == 834634,
+                         c(&quot;PROPDMG&quot;,&quot;PROPDMGEXP&quot;,&quot;CROPDMG&quot;,&quot;CROPDMGEXP&quot;,
+                           &quot;recode_PROPDMGEXP&quot;, &quot;recode_CROPDMGEXP&quot;, 
+                           &quot;PROPDMG.Total&quot;,&quot;CROPDMG.Total&quot;,&quot;Property.and.Crop.Damage&quot;)]</code></pre>
+<pre><code>##    PROPDMG PROPDMGEXP CROPDMG CROPDMGEXP recode_PROPDMGEXP
+## 1:     1.8          B       0          K             1e+09
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Property.and.Crop.Damage
+## 1:              1000       1.8e+09             0                  1.8e+09</code></pre>
+<p>Disposition: seems like an over estimate.</p>
+<p>–PROPDMG 150 PROPDMGEXP M recode_PROPDMGEXP 1000000 –PROPDMG.Total 150000000 Property.and.Crop.Damage 150000000</p>
+<pre class="r"><code>StormDataDT[REFNUM == 860355,REMARKS]</code></pre>
+<pre><code>## [1] &quot;EPISODE NARRATIVE: A powerful storm system crossed the Southeast United States on Wednesday, April 27, 2011, resulting in a large and deadly tornado outbreak.  This epic event broke the record for number of tornadoes in a day for the state of Alabama, becoming the most significant tornado outbreak in the stateb&quot;</code></pre>
+<pre class="r"><code>StormDataDT_recode_large[REFNUM == 860355,
+                         c(&quot;PROPDMG&quot;,&quot;PROPDMGEXP&quot;,&quot;CROPDMG&quot;,&quot;CROPDMGEXP&quot;,
+                           &quot;recode_PROPDMGEXP&quot;, &quot;recode_CROPDMGEXP&quot;, 
+                           &quot;PROPDMG.Total&quot;,&quot;CROPDMG.Total&quot;,&quot;Property.and.Crop.Damage&quot;)]</code></pre>
+<pre><code>##    PROPDMG PROPDMGEXP CROPDMG CROPDMGEXP recode_PROPDMGEXP
+## 1:     1.5          B       0          K             1e+09
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Property.and.Crop.Damage
+## 1:              1000       1.5e+09             0                  1.5e+09</code></pre>
+<p>Disposition: seems like an over estimate. “The area known as Tunica Cut-Off was flooded as many as 357 homes sustained damage.”</p>
+<p>–PROPDMG 100 PROPDMGEXP M recode_PROPDMGEXP 1000000 –PROPDMG.Total 100000000 Property.and.Crop.Damage 100000000</p>
+<pre class="r"><code>StormDataDT[REFNUM == 867679,REMARKS]</code></pre>
+<pre><code>## [1] &quot;EPISODE NARRATIVE: Heavy rains continued to occur across the Mid-Mississippi Valley into the Ohio Valley during the beginning part of May. In addition, spring snow melt across the Dakotas and Minnesota continued to create higher than normal river levels on the Mississippi River. The combination of the snow melt and heavy rainfall produced record breaking flooding on the Mississippi River. Numerous roads were flooded and closed as a result. Homes and businesses were flooded in the area. Many farmers lost crops or were not able to plant due to flooded fields.EVENT NARRATIVE: The Mississippi River rose to near record levels during the beginning and middle part of May. The area known as Tunica Cut-Off was flooded as many as 357 homes sustained damage. All nine casinos in Tunica County were closed and sustained some damage from flooding. Several roads were flooded and/or damaged. Several hundred acres of fields were flooded as well. The river remained above flood stage through the end of the month.&quot;</code></pre>
+<pre class="r"><code>StormDataDT_recode_large[REFNUM == 867679,
+                         c(&quot;PROPDMG&quot;,&quot;PROPDMGEXP&quot;,&quot;CROPDMG&quot;,&quot;CROPDMGEXP&quot;,
+                           &quot;recode_PROPDMGEXP&quot;, &quot;recode_CROPDMGEXP&quot;, 
+                           &quot;PROPDMG.Total&quot;,&quot;CROPDMG.Total&quot;,&quot;Property.and.Crop.Damage&quot;)]</code></pre>
+<pre><code>##    PROPDMG PROPDMGEXP CROPDMG CROPDMGEXP recode_PROPDMGEXP
+## 1:       1          B       0          K             1e+09
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Property.and.Crop.Damage
+## 1:              1000         1e+09             0                    1e+09</code></pre>
+<p>Disposition: seems like an over estimate</p>
+<p>–PROPDMG 200 PROPDMGEXP M recode_PROPDMGEXP 1000000 –PROPDMG.Total 200000000 #Property.and.Crop.Damage 200000000</p>
+<pre class="r"><code>StormDataDT[REFNUM == 867996,REMARKS]</code></pre>
+<pre><code>## [1] &quot;EPISODE NARRATIVE: Heavy rains continued to occur across the Mid-Mississippi Valley into the Ohio Valley during the beginning part of May. In addition, spring snow melt across the Dakotas and Minnesota continued to create higher than normal river levels on the Mississippi River. The combination of the snow melt and heavy rainfall produced record breaking flooding on the Mississippi River. Numerous roads were flooded and closed as a result. Homes and businesses were flooded in the area. Many farmers lost crops or were not able to plant due to flooded fields.EVENT NARRATIVE: The Mississippi River rose to near record levels in Memphis during the beginning to middle part of May. Portions of Beale Street, Riverside Drive, Tom Lee Park and the Pyramid parking lot were flooded. Portions of Mud Island flooded as well including the Mud Island Ampitheater. The flooding wiped out nearly half mile section of the eastern bank of Presidents Island. As a result, the port at McKellar Lake was closed. Several businesses on Presidents Island sustained damage. Backwater from the Mississippi River caused the Wolf River to rise above flood stage. Numerous homes along the Wolf River in North Memphis and Raleigh were flooded as a result.  Two mobile home parks in Millington were evacuated due to concerns of high water on Big Creek from backwater of the Mississippi River. The river remained above flood stage through the end of the month.&quot;</code></pre>
+<pre class="r"><code>StormDataDT_recode_large[REFNUM == 867996,
+                         c(&quot;PROPDMG&quot;,&quot;PROPDMGEXP&quot;,&quot;CROPDMG&quot;,&quot;CROPDMGEXP&quot;,
+                           &quot;recode_PROPDMGEXP&quot;, &quot;recode_CROPDMGEXP&quot;, 
+                           &quot;PROPDMG.Total&quot;,&quot;CROPDMG.Total&quot;,&quot;Property.and.Crop.Damage&quot;)]</code></pre>
+<pre><code>##    PROPDMG PROPDMGEXP CROPDMG CROPDMGEXP recode_PROPDMGEXP
+## 1:       2          B       0          K             1e+09
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Property.and.Crop.Damage
+## 1:              1000         2e+09             0                    2e+09</code></pre>
+</div>
+<div id="outlier-analysis-for-fatalities-and-injuries" class="section level3">
+<h3>Outlier analysis for fatalities and injuries</h3>
+<p>We found the fatalities and injuries data to be accurate throughout, and did not change any of the values in the data. Here are the cases for 100 or more fatalities.</p>
+<pre class="r"><code>#####################life cost outlier analysis
+StormDataDT_recode_life &lt;- StormDataDT_recode_totals[FATALITIES &gt;= 100]
+StormDataDT_recode_life$REFNUM</code></pre>
+<pre><code>## [1]  68670 148852 198690 862563</code></pre>
+</div>
+<div id="evtype-recode." class="section level3">
+<h3>EVTYPE recode.</h3>
+<p>For REFNUM 215144 we had to change EVTYPE to “WINTER WEATHER” because the original data contained a "" character, which causes an error when we run in Windows.</p>
+<pre class="r"><code>StormDataDT[REFNUM == 215144, EVTYPE]</code></pre>
+<pre><code>## [1] &quot;FROST\\FREEZE&quot;</code></pre>
+</div>
+<div id="outlier-analysis-code." class="section level3">
+<h3>Outlier Analysis Code.</h3>
+<p>This is the code in which we implement our outlier analysis.</p>
+<pre class="r"><code>for (i in 1:nrow(StormDataDT_recode_totals)) {
+  
+    if(StormDataDT_recode_totals$REFNUM[[i]] == 187564)
+    {
+      #disposition
+      #CROPDMG 55 CROPDMGEXP M recode_CROPDMGEXP 1000000 CROPDMG.Total 55000000
+      #Property.and.Crop.Damage 55500000
+      print(&quot;REFNUM == 187564&quot;)
+      print(i)
+      StormDataDT_recode_totals$PROPDMG[[i]] &lt;- 75
+      StormDataDT_recode_totals$PROPDMGEXP[[i]] &lt;- &quot;M&quot;
+      StormDataDT_recode_totals$recode_PROPDMGEXP[[i]] &lt;- 1000000
+      StormDataDT_recode_totals$PROPDMG.Total[[i]] &lt;-  75000000
+      StormDataDT_recode_totals$Property.and.Crop.Damage[[i]] &lt;- 75000000
+      print(select(filter(StormDataDT_recode_totals,REFNUM == 187564),
+                   PROPDMG.Total:Property.and.Crop.Damage))
+    }
+    
+    if(StormDataDT_recode_totals$REFNUM[[i]] == 211887)
+    {
+      #disposition
+      #CROPDMG 55 CROPDMGEXP M recode_CROPDMGEXP 1000000 CROPDMG.Total 55000000
+      #Property.and.Crop.Damage 55500000
+      print(&quot;REFNUM == 211887&quot;)
+      print(i)
+      StormDataDT_recode_totals$CROPDMG[[i]] &lt;- 55
+      StormDataDT_recode_totals$CROPDMGEXP[[i]] &lt;- &quot;M&quot;
+      StormDataDT_recode_totals$recode_CROPDMGEXP[[i]] &lt;- 1000000
+      StormDataDT_recode_totals$CROPDMG.Total[[i]] &lt;-  55000000
+      StormDataDT_recode_totals$Property.and.Crop.Damage[[i]] &lt;- 55500000
+      print(select(filter(StormDataDT_recode_totals,REFNUM == 211887),
+                   PROPDMG.Total:Property.and.Crop.Damage))
+    }
+  
+      ###special recode
+      ###for \
+      if(StormDataDT_recode_totals$REFNUM[[i]] == 215144)
+      {
+        #disposition
+        #StormDataDT[REFNUM == ,EVTYPE] &lt;- &quot;WINTER WEATHER&quot;
+        #EVTYPE &lt;- &quot;WINTER WEATHER&quot;
+        #Property.and.Crop.Damage 55500000
+        print(&quot;REFNUM == 215144&quot;)
+        print(&quot;Special EV_TYPE recode&quot;)
+        print(i)
+        StormDataDT_recode_totals$EVTYPE[[i]] &lt;- &quot;WINTER WEATHER&quot;
+        print(select(filter(StormDataDT_recode_totals,REFNUM == 215144),
+                     PROPDMG.Total:Property.and.Crop.Damage))
+      }
+  
+    if(StormDataDT_recode_totals$REFNUM[[i]] == 485535)
+    {
+      #disposition
+      #seems an over-estimate
+      #PROPDMG 100 PROPDMGEXP M 
+      #recode_PROPDMGEXP 1000000 Property.and.Crop.Damage 100000000
+      print(&quot;REFNUM == 485535&quot;)
+      print(i)
+      StormDataDT_recode_totals$PROPDMG[[i]] &lt;- 100
+      StormDataDT_recode_totals$PROPDMGEXP[[i]] &lt;- &quot;M&quot;
+      StormDataDT_recode_totals$recode_PROPDMGEXP[[i]] &lt;- 1000000
+      StormDataDT_recode_totals$PROPDMG.Total[[i]] &lt;-  100000000
+      StormDataDT_recode_totals$Property.and.Crop.Damage[[i]] &lt;- 100000000
+      print(select(filter(StormDataDT_recode_totals,REFNUM == 485535),
+                   PROPDMG.Total:Property.and.Crop.Damage))
+    }
+    if(StormDataDT_recode_totals$REFNUM[[i]] == 605943)
+    {
+      #disposition
+      #big outlier mistake
+      #PROPDMG OK PROPDMGEXP M and not B (BIG DIFFERENCE)
+      #recode_PROPDMGEXP 1000000
+      #PROPDMG.Total 115000000
+      #Property.and.Crop.Damage (115+32.5)= 147500000 
+      print(&quot;REFNUM == 605943&quot;)
+      print(i)
+      StormDataDT_recode_totals$PROPDMGEXP[[i]] &lt;- &quot;M&quot;
+      StormDataDT_recode_totals$recode_PROPDMGEXP[[i]] &lt;- 1000000
+      StormDataDT_recode_totals$PROPDMG.Total[[i]] &lt;-  115000000
+      StormDataDT_recode_totals$Property.and.Crop.Damage[[i]] &lt;- 147500000
+      print(select(filter(StormDataDT_recode_totals,REFNUM == 605943),
+                   PROPDMG.Total:Property.and.Crop.Damage))
+    }
+    if(StormDataDT_recode_totals$REFNUM[[i]] == 834634)
+    {
+      #disposition
+      #PROPDMG 200 PROPDMGEXP K recode_PROPDMGEXP 1000
+      # PROPDMG.Total 200000 Property.and.Crop.Damage 200000
+      print(&quot;REFNUM == 834634&quot;)
+      print(i)
+      StormDataDT_recode_totals$PROPDMG[[i]] &lt;- 200
+      StormDataDT_recode_totals$PROPDMGEXP[[i]] &lt;- &quot;K&quot;
+      StormDataDT_recode_totals$recode_PROPDMGEXP[[i]] &lt;- 1000
+      StormDataDT_recode_totals$PROPDMG.Total[[i]] &lt;-  200000
+      StormDataDT_recode_totals$Property.and.Crop.Damage[[i]] &lt;- 200000
+      print(select(filter(StormDataDT_recode_totals,REFNUM == 834634),
+                   PROPDMG.Total:Property.and.Crop.Damage))
+    }
+    if(StormDataDT_recode_totals$REFNUM[[i]] == 860355)
+    {
+      #disposition
+      #PROPDMG 150 PROPDMGEXP M recode_PROPDMGEXP 1000000 
+      #PROPDMG.Total 150000000 Property.and.Crop.Damage 150000000
+      print(&quot;REFNUM == 860355&quot;)
+      print(i)
+      StormDataDT_recode_totals$PROPDMG[[i]] &lt;- 150
+      StormDataDT_recode_totals$PROPDMGEXP[[i]] &lt;- &quot;M&quot;
+      StormDataDT_recode_totals$recode_PROPDMGEXP[[i]] &lt;- 1000000
+      StormDataDT_recode_totals$PROPDMG.Total[[i]] &lt;-  150000000
+      StormDataDT_recode_totals$Property.and.Crop.Damage[[i]] &lt;- 150000000
+      print(select(filter(StormDataDT_recode_totals,REFNUM == 860355),
+                   PROPDMG.Total:Property.and.Crop.Damage))
+    }
+    if(StormDataDT_recode_totals$REFNUM[[i]] == 867679)
+    {
+      #disposition
+      #PROPDMG 100 PROPDMGEXP M recode_PROPDMGEXP 1000000 
+      #PROPDMG.Total 100000000    Property.and.Crop.Damage 100000000
+      print(&quot;REFNUM == 867679&quot;)
+      print(i)
+      StormDataDT_recode_totals$PROPDMG[[i]] &lt;- 100
+      StormDataDT_recode_totals$PROPDMGEXP[[i]] &lt;- &quot;M&quot;
+      StormDataDT_recode_totals$recode_PROPDMGEXP[[i]] &lt;- 1000000
+      StormDataDT_recode_totals$PROPDMG.Total[[i]] &lt;-  100000000
+      StormDataDT_recode_totals$Property.and.Crop.Damage[[i]] &lt;- 100000000
+      print(select(filter(StormDataDT_recode_totals,REFNUM == 867679),
+                   PROPDMG.Total:Property.and.Crop.Damage))
+    }
+    if(StormDataDT_recode_totals$REFNUM[[i]] == 867996)
+    {
+      #disposition
+      #PROPDMG 200 PROPDMGEXP M recode_PROPDMGEXP 1000000 
+      #PROPDMG.Total 200000000 #Property.and.Crop.Damage 200000000
+      print(&quot;REFNUM == 867996&quot;)
+      print(i)
+      StormDataDT_recode_totals$PROPDMG[[i]] &lt;- 200
+      StormDataDT_recode_totals$PROPDMGEXP[[i]] &lt;- &quot;M&quot;
+      StormDataDT_recode_totals$recode_PROPDMGEXP[[i]] &lt;- 1000000
+      StormDataDT_recode_totals$PROPDMG.Total[[i]] &lt;-  200000000
+      StormDataDT_recode_totals$Property.and.Crop.Damage[[i]] &lt;- 200000000
+      print(select(filter(StormDataDT_recode_totals,REFNUM == 867996),
+                   PROPDMG.Total:Property.and.Crop.Damage))
+    }
+  
+  
+}</code></pre>
+<pre><code>## [1] &quot;REFNUM == 187564&quot;
+## [1] 187564
+##   PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1       7.5e+07             0                       4
+##   Property.and.Crop.Damage
+## 1                  7.5e+07
+## [1] &quot;REFNUM == 211887&quot;
+## [1] 211900
+##   PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1         5e+05       5.5e+07                       0
+##   Property.and.Crop.Damage
+## 1                 55500000
+## [1] &quot;REFNUM == 215144&quot;
+## [1] &quot;Special EV_TYPE recode&quot;
+## [1] 215228
+##   PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1         5e+05             0                       0
+##   Property.and.Crop.Damage
+## 1                    5e+05
+## [1] &quot;REFNUM == 485535&quot;
+## [1] 485577
+##   PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1         1e+08             0                       0
+##   Property.and.Crop.Damage
+## 1                    1e+08
+## [1] &quot;REFNUM == 605943&quot;
+## [1] 605953
+##   PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1      1.15e+08      32500000                       0
+##   Property.and.Crop.Damage
+## 1                147500000
+## [1] &quot;REFNUM == 834634&quot;
+## [1] 834674
+##   PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1         2e+05             0                       1
+##   Property.and.Crop.Damage
+## 1                    2e+05
+## [1] &quot;REFNUM == 860355&quot;
+## [1] 860386
+##   PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1       1.5e+08             0                     844
+##   Property.and.Crop.Damage
+## 1                  1.5e+08
+## [1] &quot;REFNUM == 867679&quot;
+## [1] 867749
+##   PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1         1e+08             0                       0
+##   Property.and.Crop.Damage
+## 1                    1e+08
+## [1] &quot;REFNUM == 867996&quot;
+## [1] 868046
+##   PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1         2e+08             0                       0
+##   Property.and.Crop.Damage
+## 1                    2e+08</code></pre>
+</div>
+<div id="filter-data-to-keep-only-non-zero-rows." class="section level3">
+<h3>Filter data to keep only non-zero rows.</h3>
+<p>We load the data from the recodes into our working dataset, and then filter that dataset for non-zero values for the fields in our analysis.</p>
+<pre class="r"><code>head(StormDataDT_recode_totals)</code></pre>
+<pre><code>##    REFNUM           BGN_DATE  EVTYPE FATALITIES INJURIES PROPDMG
+## 1:      1  4/18/1950 0:00:00 TORNADO          0       15    25.0
+## 2:      2  4/18/1950 0:00:00 TORNADO          0        0     2.5
+## 3:      3  2/20/1951 0:00:00 TORNADO          0        2    25.0
+## 4:      4   6/8/1951 0:00:00 TORNADO          0        2     2.5
+## 5:      5 11/15/1951 0:00:00 TORNADO          0        2     2.5
+## 6:      6 11/15/1951 0:00:00 TORNADO          0        6     2.5
+##    PROPDMGEXP CROPDMG CROPDMGEXP BGN_DATE_year recode_PROPDMGEXP
+## 1:          K       0                     1950              1000
+## 2:          K       0                     1950              1000
+## 3:          K       0                     1951              1000
+## 4:          K       0                     1951              1000
+## 5:          K       0                     1951              1000
+## 6:          K       0                     1951              1000
+##    recode_CROPDMGEXP PROPDMG.Total CROPDMG.Total Fatalities.and.Injuries
+## 1:                 1         25000             0                      15
+## 2:                 1          2500             0                       0
+## 3:                 1         25000             0                       2
+## 4:                 1          2500             0                       2
+## 5:                 1          2500             0                       2
+## 6:                 1          2500             0                       6
+##    Property.and.Crop.Damage
+## 1:                    25000
+## 2:                     2500
+## 3:                    25000
+## 4:                     2500
+## 5:                     2500
+## 6:                     2500</code></pre>
+<pre class="r"><code>nrow(StormDataDT_recode_totals)</code></pre>
+<pre><code>## [1] 902297</code></pre>
+<pre class="r"><code>#[1] 902297
+StormDataDT_recode &lt;- StormDataDT_recode_totals[,
+                          c(&quot;BGN_DATE_year&quot;,&quot;EVTYPE&quot;,&quot;FATALITIES&quot;,&quot;INJURIES&quot;,
+                            &quot;PROPDMG.Total&quot;,&quot;CROPDMG.Total&quot;,
+                            &quot;Fatalities.and.Injuries&quot;,&quot;Property.and.Crop.Damage&quot;)]
+class(StormDataDT_recode)</code></pre>
+<pre><code>## [1] &quot;data.table&quot; &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>head(StormDataDT_recode)</code></pre>
+<pre><code>##    BGN_DATE_year  EVTYPE FATALITIES INJURIES PROPDMG.Total CROPDMG.Total
+## 1:          1950 TORNADO          0       15         25000             0
+## 2:          1950 TORNADO          0        0          2500             0
+## 3:          1951 TORNADO          0        2         25000             0
+## 4:          1951 TORNADO          0        2          2500             0
+## 5:          1951 TORNADO          0        2          2500             0
+## 6:          1951 TORNADO          0        6          2500             0
+##    Fatalities.and.Injuries Property.and.Crop.Damage
+## 1:                      15                    25000
+## 2:                       0                     2500
+## 3:                       2                    25000
+## 4:                       2                     2500
+## 5:                       2                     2500
+## 6:                       6                     2500</code></pre>
+<pre class="r"><code>#check for zeroes
+nrow(StormDataDT_recode[FATALITIES == 0  &amp; INJURIES == 0])</code></pre>
+<pre><code>## [1] 880368</code></pre>
+<pre class="r"><code>nrow(StormDataDT_recode[Property.and.Crop.Damage == 0])</code></pre>
+<pre><code>## [1] 657266</code></pre>
+<pre class="r"><code>nrow(StormDataDT_recode[(FATALITIES == 0  &amp; INJURIES == 0) | 
+                          Property.and.Crop.Damage == 0])</code></pre>
+<pre><code>## [1] 889970</code></pre>
+<pre class="r"><code>nrow(StormDataDT_recode[!((FATALITIES == 0  &amp; INJURIES == 0) | 
+                          Property.and.Crop.Damage == 0)])</code></pre>
+<pre><code>## [1] 12327</code></pre>
+<pre class="r"><code>StormDataDT_recode_nonzero &lt;- StormDataDT_recode[!(FATALITIES == 0  &amp; INJURIES == 0 &amp; 
+                                                     Property.and.Crop.Damage == 0)]
+nrow(StormDataDT_recode_nonzero)</code></pre>
+<pre><code>## [1] 254633</code></pre>
+<p>The results in the nonzero skim of the data should be the same as they were in the working dataset that had all the zero value rows. Here are the sums for the working dataset.</p>
+<pre class="r"><code>sum(StormDataDT_recode_totals$FATALITIES)</code></pre>
+<pre><code>## [1] 15145</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_totals$INJURIES)</code></pre>
+<pre><code>## [1] 140528</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_totals$Fatalities.and.Injuries)</code></pre>
+<pre><code>## [1] 155673</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_totals$PROPDMG.Total)</code></pre>
+<pre><code>## [1] 301665066095</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_totals$CROPDMG.Total)</code></pre>
+<pre><code>## [1] 44159192181</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_totals$Property.and.Crop.Damage)</code></pre>
+<pre><code>## [1] 345824258276</code></pre>
+<p>Here are the sums for the filtered dataset.</p>
+<pre class="r"><code>sum(StormDataDT_recode_nonzero$FATALITIES)</code></pre>
+<pre><code>## [1] 15145</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_nonzero$INJURIES)</code></pre>
+<pre><code>## [1] 140528</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_nonzero$Fatalities.and.Injuries)</code></pre>
+<pre><code>## [1] 155673</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_nonzero$PROPDMG.Total)</code></pre>
+<pre><code>## [1] 301665066095</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_nonzero$CROPDMG.Total)</code></pre>
+<pre><code>## [1] 44159192181</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_nonzero$Property.and.Crop.Damage)</code></pre>
+<pre><code>## [1] 345824258276</code></pre>
+</div>
+<div id="inflation-adjustment" class="section level3">
+<h3>Inflation Adjustment</h3>
+<p>We use the U.S. Inflation Calculator website [<a href="https://www.usinflationcalculator.com" class="uri">https://www.usinflationcalculator.com</a>] to find out the value of 2011 dollars for the years 1950 to 2010. We insert this data into a table and join it with our data.</p>
+<pre class="r"><code>Inflation_multiplier &lt;- tribble(
+  ~year, ~Inflation.Adjustment,
+  #----/----------------------
+  1950  ,   9.33    ,
+  1951  ,   8.65    ,
+  1952  ,   8.49    ,
+  1953  ,   8.42    ,
+  1954  ,   8.36    ,
+  1955  ,   8.39    ,
+  1956  ,   8.27    ,
+  1957  ,   8   ,
+  1958  ,   7.78    ,
+  1959  ,   7.73    ,
+  1960  ,   7.6 ,
+  1961  ,   7.52    ,
+  1962  ,   7.45    ,
+  1963  ,   7.35    ,
+  1964  ,   7.26    ,
+  1965  ,   7.14    ,
+  1966  ,   6.94    ,
+  1967  ,   6.73    ,
+  1968  ,   6.46    ,
+  1969  ,   6.13    ,
+  1970  ,   5.8 ,
+  1971  ,   5.55    ,
+  1972  ,   5.38    ,
+  1973  ,   5.07    ,
+  1974  ,   4.56    ,
+  1975  ,   4.18    ,
+  1976  ,   3.95    ,
+  1977  ,   3.71    ,
+  1978  ,   3.45    ,
+  1979  ,   3.1 ,
+  1980  ,   2.73    ,
+  1981  ,   2.47    ,
+  1982  ,   2.33    ,
+  1983  ,   2.26    ,
+  1984  ,   2.16    ,
+  1985  ,   2.09    ,
+  1986  ,   2.05    ,
+  1987  ,   1.98    ,
+  1988  ,   1.9 ,
+  1989  ,   1.81    ,
+  1990  ,   1.72    ,
+  1991  ,   1.65    ,
+  1992  ,   1.6 ,
+  1993  ,   1.56    ,
+  1994  ,   1.52    ,
+  1995  ,   1.48    ,
+  1996  ,   1.43    ,
+  1997  ,   1.4 ,
+  1998  ,   1.38    ,
+  1999  ,   1.35    ,
+  2000  ,   1.31    ,
+  2001  ,   1.27    ,
+  2002  ,   1.25    ,
+  2003  ,   1.22    ,
+  2004  ,   1.19    ,
+  2005  ,   1.15    ,
+  2006  ,   1.12    ,
+  2007  ,   1.08    ,
+  2008  ,   1.04    ,
+  2009  ,   1.05    ,
+  2010  ,   1.03    ,
+  2011  ,   1   
+)  
+head(Inflation_multiplier)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##    year Inflation.Adjustment
+##   &lt;dbl&gt;                &lt;dbl&gt;
+## 1  1950                 9.33
+## 2  1951                 8.65
+## 3  1952                 8.49
+## 4  1953                 8.42
+## 5  1954                 8.36
+## 6  1955                 8.39</code></pre>
+<pre class="r"><code>tail(Inflation_multiplier)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##    year Inflation.Adjustment
+##   &lt;dbl&gt;                &lt;dbl&gt;
+## 1  2006                 1.12
+## 2  2007                 1.08
+## 3  2008                 1.04
+## 4  2009                 1.05
+## 5  2010                 1.03
+## 6  2011                 1</code></pre>
+<pre class="r"><code>StormDataDT_recode_nonzero &lt;- as_tibble(StormDataDT_recode_nonzero)
+StormDataDT_recode_nonzero &lt;- 
+  mutate(StormDataDT_recode_nonzero, year = as.numeric(BGN_DATE_year))
+
+StormDataDT_recode_infla &lt;- StormDataDT_recode_nonzero %&gt;% 
+  inner_join(Inflation_multiplier, by = &quot;year&quot;)
+
+names(StormDataDT_recode_infla)</code></pre>
+<pre><code>##  [1] &quot;BGN_DATE_year&quot;            &quot;EVTYPE&quot;                  
+##  [3] &quot;FATALITIES&quot;               &quot;INJURIES&quot;                
+##  [5] &quot;PROPDMG.Total&quot;            &quot;CROPDMG.Total&quot;           
+##  [7] &quot;Fatalities.and.Injuries&quot;  &quot;Property.and.Crop.Damage&quot;
+##  [9] &quot;year&quot;                     &quot;Inflation.Adjustment&quot;</code></pre>
+<pre class="r"><code>head(StormDataDT_recode_infla$Inflation.Adjustment,100)</code></pre>
+<pre><code>##   [1] 9.33 9.33 8.65 8.65 8.65 8.65 8.65 8.49 8.49 8.49 8.49 8.49 8.49 8.49
+##  [15] 8.49 8.49 8.49 8.49 8.49 8.49 8.42 8.42 8.42 8.42 8.42 8.42 8.42 8.42
+##  [29] 8.42 8.42 8.42 8.42 8.42 8.42 8.42 8.42 8.42 8.42 8.42 8.42 8.42 8.42
+##  [43] 8.36 8.36 8.36 8.36 8.36 8.36 8.36 8.36 8.36 8.36 8.39 8.39 8.39 8.39
+##  [57] 8.39 8.39 8.39 8.39 8.27 8.27 8.27 8.27 8.27 8.27 8.27 8.00 8.00 8.00
+##  [71] 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00
+##  [85] 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00 8.00
+##  [99] 8.00 8.00</code></pre>
+<pre class="r"><code>tail(StormDataDT_recode_infla$Inflation.Adjustment,100)</code></pre>
+<pre><code>##   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+##  [36] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+##  [71] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</code></pre>
+<pre class="r"><code>StormDataDT_recode_infla &lt;- select(StormDataDT_recode_infla, -(BGN_DATE_year))
+StormDataDT_recode_infla_adjusted &lt;- transmute(StormDataDT_recode_infla, year,
+          EVTYPE, FATALITIES, INJURIES, Fatalities.and.Injuries,
+          PROPDMG.Total.Infla = PROPDMG.Total * Inflation.Adjustment,
+          CROPDMG.Total.Infla = CROPDMG.Total * Inflation.Adjustment, 
+          Property.and.Crop.Damage.Infla = Property.and.Crop.Damage * Inflation.Adjustment)</code></pre>
+<p>We check the inflation adjusted dataset.</p>
+<pre class="r"><code>head(StormDataDT_recode_infla_adjusted)</code></pre>
+<pre><code>## # A tibble: 6 x 8
+##    year EVTYPE FATALITIES INJURIES Fatalities.and.~ PROPDMG.Total.I~
+##   &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1  1950 TORNA~          0       15               15           233250
+## 2  1950 TORNA~          0        0                0            23325
+## 3  1951 TORNA~          0        2                2           216250
+## 4  1951 TORNA~          0        2                2            21625
+## 5  1951 TORNA~          0        2                2            21625
+## 6  1951 TORNA~          0        6                6            21625
+## # ... with 2 more variables: CROPDMG.Total.Infla &lt;dbl&gt;,
+## #   Property.and.Crop.Damage.Infla &lt;dbl&gt;</code></pre>
+<pre class="r"><code>tail(StormDataDT_recode_infla_adjusted)</code></pre>
+<pre><code>## # A tibble: 6 x 8
+##    year EVTYPE FATALITIES INJURIES Fatalities.and.~ PROPDMG.Total.I~
+##   &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1  2011 WINTE~          0        0                0             2000
+## 2  2011 WINTE~          0        0                0             5000
+## 3  2011 STRON~          0        0                0              600
+## 4  2011 STRON~          0        0                0             1000
+## 5  2011 DROUG~          0        0                0             2000
+## 6  2011 HIGH ~          0        0                0             7500
+## # ... with 2 more variables: CROPDMG.Total.Infla &lt;dbl&gt;,
+## #   Property.and.Crop.Damage.Infla &lt;dbl&gt;</code></pre>
+<pre class="r"><code>nrow(StormDataDT_recode_infla_adjusted)</code></pre>
+<pre><code>## [1] 254633</code></pre>
+</div>
+</div>
+<div id="evtype-recode" class="section level2">
+<h2>EVTYPE recode</h2>
+<p>We group the EVTYPE desriptions into eight categories:</p>
+<ul>
+<li>DROUGHT, EXCESSIVE HEAT</li>
+<li>HEAVY RAIN, FLOODING, MUDSLIDES, LANDSLIDES</li>
+<li>HURRICANE SEASON</li>
+<li>THUNDERSTORM</li>
+<li>TORNADO, HAIL, HIGH WIND</li>
+<li>WILDFIRE</li>
+<li>WINTER WEATHER</li>
+<li>OTHER (e.g.: Tsunamis, rip currents, fog)</li>
+</ul>
+<p>First, we sum by year and EVTYPE to recode a given EVTYPE in the smallest possible number of instances. We place that dataset in test copy that we will eventually use as our final copy.</p>
+<pre class="r"><code>StormDataDT_recode_summed &lt;- 
+  StormDataDT_recode_infla_adjusted %&gt;% group_by(year, EVTYPE) %&gt;% 
+  summarize(Property.and.Crop.Damage.Sum = sum(Property.and.Crop.Damage.Infla),
+            Fatalities.and.Injuries.Sum = sum(Fatalities.and.Injuries))
+head(StormDataDT_recode_summed)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   year [6]
+##    year EVTYPE  Property.and.Crop.Damage.Sum Fatalities.and.Injuries.Sum
+##   &lt;dbl&gt; &lt;chr&gt;                          &lt;dbl&gt;                       &lt;dbl&gt;
+## 1  1950 TORNADO                   321713794.                         729
+## 2  1951 TORNADO                   566626814.                         558
+## 3  1952 TORNADO                   798928018.                        2145
+## 4  1953 TORNADO                  5019201574                         5650
+## 5  1954 TORNADO                   717332475.                         751
+## 6  1955 TORNADO                   693522686.                        1055</code></pre>
+<pre class="r"><code>nrow(StormDataDT_recode_summed)</code></pre>
+<pre><code>## [1] 1378</code></pre>
+<pre class="r"><code>StormDataDT_recode_summed_test &lt;- StormDataDT_recode_summed
+class(StormDataDT_recode_summed_test)</code></pre>
+<pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+<p>Here is the code.</p>
+<pre class="r"><code>for (i in 1:nrow(StormDataDT_recode_summed_test)) {
+  
+  if (StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;DROUGHT&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;DROUGHT/EXCESSIVE HEAT&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;EXCESSIVE HEAT&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAT&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAT WAVE&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAT WAVE DROUGHT&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAT WAVES&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RECORD HEAT&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RECORD/EXCESSIVE HEAT&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;UNSEASONABLY WARM&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;UNSEASONABLY WARM AND DRY&quot; | 
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;WARM WEATHER&quot; |
+      #straggler
+      StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;Heat Wave&quot; ) 
+  
+  {StormDataDT_recode_summed_test$EVTYPE[[i]] &lt;- &quot;DROUGHT, EXCESSIVE HEAT&quot;}
+  
+  if(StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;   HIGH SURF ADVISORY&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot; FLASH FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;BREAKUP FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;COASTAL  FLOODING/EROSION&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;COASTAL EROSION&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;COASTAL FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;COASTAL FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;COASTAL FLOODING/EROSION&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;COASTAL STORM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;COASTAL SURGE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;COASTALSTORM&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;Coastal Flood&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;Coastal Flooding&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;Coastal Storm&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;Erosion/Cstl Flood&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;EXCESSIVE RAINFALL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;EXCESSIVE SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;EXTREME HEAT&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOOD - HEAVY RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOOD LANDSLIDES&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOOD WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOOD/&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOOD/ STREET&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOOD/FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOOD/LANDSLIDE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOODING/FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLASH FLOODS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOOD &amp; HEAVY RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOOD FLASH&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOOD/FLASH&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOOD/FLASH FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOOD/FLASH/FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOOD/FLASHFLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOOD/RAIN/WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOOD/RIVER FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOODING/HEAVY RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;FLOODS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HAZARDOUS SURF&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY RAIN AND FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;Heavy Rain/High Surf&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY RAIN/LIGHTNING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY RAIN/SEVERE WEATHER&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY RAIN/SMALL STREAM URBAN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY RAIN/SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY RAINS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY RAINS/FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY SEAS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY SHOWER&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY SURF&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;Heavy surf and wind&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY SURF COASTAL FLOODING&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY SURF/HIGH SURF&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HEAVY SWELLS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HIGH  WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HIGH SEAS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HIGH SURF&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HIGH SWELLS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HIGH TIDES&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HIGH WATER&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HIGH WAVES&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;HVY RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;LAKE FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;LAKE-EFFECT SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;LAKESHORE FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;LANDSLIDE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;LANDSLIDES&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;Landslump&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;LANDSPOUT&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;MAJOR FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;MARINE HIGH WIND&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;MARINE STRONG WIND&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;MINOR FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;MIXED PRECIP&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;Mixed Precipitation&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;MUD SLIDE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;MUD SLIDES&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;MUD SLIDES URBAN FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;MUDSLIDE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;MUDSLIDES&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RAIN/SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RAIN/WIND&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RAINSTORM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RAPIDLY RISING WATER&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RECORD RAINFALL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RIP CURRENTS/HEAVY SURF&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RIVER AND STREAM FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RIVER FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RIVER FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;ROCK SLIDE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;ROGUE WAVE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;ROUGH SEAS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;ROUGH SURF&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;RURAL FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;SMALL STREAM FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;STORM FORCE WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;STORM SURGE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;STORM SURGE/TIDE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;TIDAL FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;TORNADO F0&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;TORNADO F1&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;TORNADO F2&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;TORNADO F3&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;TORNADOES&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;Torrential Rainfall&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;UNSEASONAL RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;URBAN AND SMALL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;URBAN AND SMALL STREAM FLOODIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;URBAN FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;URBAN FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;URBAN FLOODS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;URBAN SMALL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;URBAN/SMALL STREAM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;URBAN/SMALL STREAM FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;URBAN/SML STREAM FLD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;WIND AND WAVE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;WIND STORM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;WIND/HAIL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] ==&quot;WINDS&quot; )
+  
+  {StormDataDT_recode_summed_test$EVTYPE[[i]] &lt;- &quot;HEAVY RAIN, FLOODING, MUDSLIDES, LANDSLIDES&quot;}
+  
+  if(StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HURRICANE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Hurricane Edouard&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HURRICANE EMILY&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HURRICANE ERIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HURRICANE FELIX&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HURRICANE GORDON&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HURRICANE OPAL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HURRICANE OPAL/HIGH WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HURRICANE/TYPHOON&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HURRICANE-GENERATED SWELLS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TROPICAL DEPRESSION&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TROPICAL STORM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TROPICAL STORM ALBERTO&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TROPICAL STORM DEAN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TROPICAL STORM GORDON&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TROPICAL STORM JERRY&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TYPHOON&quot; ) 
+  
+  {StormDataDT_recode_summed_test$EVTYPE[[i]] &lt;- &quot;HURRICANE SEASON&quot;}
+
+  if(StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;?&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;APACHE COUNTY&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ASTRONOMICAL HIGH TIDE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ASTRONOMICAL LOW TIDE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Beach Erosion&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;COOL AND WET&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DAM BREAK&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DENSE FOG&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DENSE SMOKE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DOWNBURST&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DROWNING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FOG&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FOG AND COLD TEMPERATURES&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY MIX&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY PRECIPITATION&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HYPERTHERMIA/EXPOSURE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HYPOTHERMIA&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Hypothermia/Exposure&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Marine Accident&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;MARINE MISHAP&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Other&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;RIP CURRENT&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;RIP CURRENTS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;VOLCANIC ASH&quot; |
+     #stragglers
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HYPOTHERMIA/EXPOSURE&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;MIXED PRECIPITATION&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSUNAMI&quot;) 
+
+  {StormDataDT_recode_summed_test$EVTYPE[[i]] &lt;- &quot;OTHER&quot;}
+  
+    if(StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot; TSTM WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot; TSTM WIND (G45)&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FLASH FLOODING/THUNDERSTORM WI&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHTING&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHTNING&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHTNING  WAUSEON&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHTNING AND HEAVY RAIN&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHTNING AND THUNDERSTORM WIN&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHTNING FIRE&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHTNING INJURY&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHTNING THUNDERSTORM WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHTNING.&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHTNING/HEAVY RAIN&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGNTNING&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;MARINE THUNDERSTORM WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;MARINE TSTM WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SEVERE THUNDERSTORM&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SEVERE THUNDERSTORM WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SEVERE THUNDERSTORMS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUDERSTORM WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDEERSTORM WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERESTORM WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSNOW&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM  WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM DAMAGE TO&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM HAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND (G40)&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND 60 MPH&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND 65 MPH&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND 65MPH&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND 98 MPH&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND G50&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND G52&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND G55&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND G60&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND TREES&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND.&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND/ TREE&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND/ TREES&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND/AWNING&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND/HAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WIND/LIGHTNING&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS 13&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS 63 MPH&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS AND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS G60&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS HAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS LIGHTNING&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS.&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS/ FLOOD&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS/FLOODING&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS/FUNNEL CLOU&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS/HAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDS53&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDSHAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINDSS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORM WINS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORMS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORMS WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORMS WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORMW&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTORMWINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERSTROM WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNDERTORM WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;THUNERSTORM WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND  (G45)&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND (41)&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND (G35)&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND (G40)&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND (G45)&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND 40&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND 45&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND 55&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND 65)&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND AND LIGHTNING&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND DAMAGE&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND G45&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND G58&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WIND/HAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTM WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TSTMW&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TUNDERSTORM WIND&quot; |
+       #straggler
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Tstm Wind&quot;)
+  
+    {StormDataDT_recode_summed_test$EVTYPE[[i]] &lt;- &quot;THUNDERSTORM&quot;}
+  
+    if(StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DRY MICROBURST&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DRY MIRCOBURST WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DUST DEVIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DUST DEVIL WATERSPOUT&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DUST STORM&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DUST STORM/HIGH WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FUNNEL CLOUD&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GRADIENT WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GUSTNADO&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GUSTY WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GUSTY WIND/HAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GUSTY WIND/HVY RAIN&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Gusty wind/rain&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GUSTY WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL 0.75&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL 075&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL 100&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL 125&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL 150&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL 175&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL 200&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL 275&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL 450&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL 75&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL DAMAGE&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL/WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAIL/WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HAILSTORM&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WIND (G40)&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WIND 48&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WIND AND SEAS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WIND DAMAGE&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WIND/BLIZZARD&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WIND/HEAVY SNOW&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WIND/SEAS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WINDS HEAVY RAINS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WINDS/&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WINDS/COASTAL FLOOD&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WINDS/COLD&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WINDS/HEAVY RAIN&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HIGH WINDS/SNOW&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;MARINE HAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;MICROBURST&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;MICROBURST WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;NON TSTM WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;NON-SEVERE WIND DAMAGE&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;NON-TSTM WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SEICHE&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SEVERE TURBULENCE&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SMALL HAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;STRONG WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;STRONG WINDS&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TORNADO&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TORNADOES, TSTM WIND, HAIL&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;TORNDAO&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WATERSPOUT&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WATERSPOUT-&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WATERSPOUT TORNADO&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WATERSPOUT/ TORNADO&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WATERSPOUT/TORNADO&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WATERSPOUT-TORNADO&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WET MICROBURST&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Whirlwind&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WIND&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WIND DAMAGE&quot; |
+       #stragglers 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Dust Devil&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;gradient wind&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Gusty winds&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Microburst&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Strong Wind&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Strong Winds&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WHIRLWIND&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Wind&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Wind Damage&quot; |
+       #stargglers
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Heavy Surf&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;High Surf&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Mudslide&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Mudslides&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;River Flooding&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Tidal Flooding&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Gradient wind&quot; |
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Gusty Winds&quot; )
+    
+    {StormDataDT_recode_summed_test$EVTYPE[[i]] &lt;- &quot;TORNADO, HAIL, HIGH WIND&quot;}
+  
+    if(StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;BRUSH FIRE&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FOREST FIRES&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GRASS FIRES&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WILD FIRES&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WILD/FOREST FIRE&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WILD/FOREST FIRES&quot; | 
+       StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WILDFIRES&quot; )
+
+    {StormDataDT_recode_summed_test$EVTYPE[[i]] &lt;- &quot;WILDFIRE&quot;} 
+  
+  if(StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;AGRICULTURAL FREEZE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;AVALANCE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;AVALANCHE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;BLACK ICE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;BLIZZARD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;BLIZZARD/WINTER STORM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;BLOWING DUST&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;BLOWING SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;blowing snow&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;COLD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;COLD AIR TORNADO&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;COLD AND SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;COLD AND WET CONDITIONS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Cold Temperature&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;COLD WAVE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;COLD WEATHER&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;COLD/WIND CHILL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;COLD/WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;DAMAGING FREEZE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Early Frost&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;EXCESSIVE WETNESS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Extended Cold&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;EXTREME COLD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;EXTREME COLD/WIND CHILL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;EXTREME WIND CHILL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;EXTREME WINDCHILL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FALLING SNOW/ICE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FLASH FLOOD FROM ICE JAMS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FREEZE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FREEZING DRIZZLE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FREEZING FOG&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FREEZING RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FREEZING RAIN/SLEET&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FREEZING RAIN/SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Freezing Spray&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FROST&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Frost/Freeze&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;FROST/FREEZE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GLAZE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GLAZE ICE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GLAZE/ICE STORM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;GROUND BLIZZARD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HARD FREEZE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY LAKE SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW AND HIGH WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW AND STRONG WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Heavy snow shower&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW SQUALLS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW/BLIZZARD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW/BLIZZARD/AVALANCHE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW/FREEZING RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW/HIGH WINDS &amp; FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW/ICE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW/SQUALLS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW/WIND&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW/WINTER STORM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOWPACK&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;HEAVY SNOW-SQUALLS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICE AND SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICE FLOES&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICE JAM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Ice jam flood (minor&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICE JAM FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICE ON ROAD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICE ROADS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICE STORM&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICE STORM/FLASH FLOOD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICE/STRONG WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;ICY ROADS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Lake Effect Snow&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LATE SEASON SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHT FREEZING RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Light snow&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Light Snowfall&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LOW TEMPERATURE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;RECORD COLD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;RECORD SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SLEET&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SLEET/ICE STORM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW ACCUMULATION&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW AND HEAVY SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW AND ICE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW AND ICE STORM&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW FREEZING RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW SQUALL&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW SQUALLS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/ BITTER COLD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/ ICE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/BLOWING SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/COLD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/FREEZING RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/HEAVY SNOW&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/HIGH WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/ICE&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/ICE STORM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/SLEET&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOW/SLEET/FREEZING RAIN&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;SNOWMELT FLOODING&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Unseasonable Cold&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;UNSEASONABLY COLD&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WINTER STORM&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WINTER STORM HIGH WINDS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WINTER STORMS&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WINTER WEATHER MIX&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WINTER WEATHER/MIX&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Wintry Mix&quot; |
+     #stragglers
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Cold&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Damaging Freeze&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Extreme Cold&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Freeze&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Freezing Drizzle&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Freezing Rain&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Glaze&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LAKE EFFECT SNOW&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Light Snow&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Snow&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Snow Squalls&quot; | 
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;WINTRY MIX&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;Freezing drizzle&quot; |
+     StormDataDT_recode_summed_test$EVTYPE[[i]] == &quot;LIGHT SNOW&quot; )
+
+   {StormDataDT_recode_summed_test$EVTYPE[[i]] &lt;- &quot;WINTER WEATHER&quot;}   
+
+}  </code></pre>
+<p>We are finally ready to compile the dataset we can use to show our results.</p>
+<pre class="r"><code>StormDataDT_recode_summed_final &lt;- 
+  StormDataDT_recode_summed_test %&gt;% group_by(year, EVTYPE) %&gt;%
+  summarize(Property.and.Crop.Damage.Final = (sum(Property.and.Crop.Damage.Sum)/1000000),
+          Fatalities.and.Injuries.Final = sum(Fatalities.and.Injuries.Sum))</code></pre>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<p>The eight categories of natural disaster in our analysis are:</p>
+<ul>
+<li>DROUGHT, EXCESSIVE HEAT</li>
+<li>HEAVY RAIN, FLOODING, MUDSLIDES, LANDSLIDES</li>
+<li>HURRICANE SEASON</li>
+<li>THUNDERSTORM</li>
+<li>TORNADO, HAIL, HIGH WIND</li>
+<li>WILDFIRE</li>
+<li>WINTER WEATHER</li>
+<li>OTHER (e.g.: Tsunamis, rip currents, fog)</li>
+</ul>
+<p>The years reported for the eight categories of natural disasters vary for all effects (property damage, crop damage, fatalities, and injurues). The TORNADO, HAIL, HIGH WIND category has data for the complete time period of this analysis (1950-2011). Fatalities and Injuries are reported for 1983-2011 for the THUNDERSTORM category. For the other six categories, and for the the THUNDERSTORM category for property damage and crop damage.</p>
+<p>The total costs for property and crop damage, knowing that all categories are not fully reported for the 1950-2011 time period, after inflation adjustment and recoding of a handul of the largest outliers for property and crop damage is $495.7 billion dollars. The total number of fatalities and injuries for this time period is 155,673, with 15,145 (9.7 percent) consisting fatalities, and 140,528 (90.3 percent) consisting of injuries.</p>
+<pre class="r"><code>sum(StormDataDT_recode_summed_final$Property.and.Crop.Damage.Final)</code></pre>
+<pre><code>## [1] 495661.3</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_infla_adjusted$FATALITIES)</code></pre>
+<pre><code>## [1] 15145</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_infla_adjusted$INJURIES)</code></pre>
+<pre><code>## [1] 140528</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_infla_adjusted$Fatalities.and.Injuries)</code></pre>
+<pre><code>## [1] 155673</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_infla_adjusted$FATALITIES)/sum(StormDataDT_recode_infla_adjusted$Fatalities.and.Injuries)</code></pre>
+<pre><code>## [1] 0.09728726</code></pre>
+<pre class="r"><code>sum(StormDataDT_recode_infla_adjusted$INJURIES)/sum(StormDataDT_recode_infla_adjusted$Fatalities.and.Injuries)</code></pre>
+<pre><code>## [1] 0.9027127</code></pre>
+<p>Knowning that the categories are not comparable means that all we can say about the data when we consider all of the data are the total costs to property and crops and the total fatalities and injuries.</p>
+<p>With this caveat, for what has been reported between 1950 and 2011, “TORNADO, HAIL, HIGH WIND” events have cost $172.9 billion dollars in property and crop damage, followed by “HEAVY RAIN, FLOODING, MUDSLIDES, LANDSLIDES” property and crop damage costs at $139.6 billion dollars, and “HURRICANE SEASON” property and crop damage costs at $119.6 billion dollars. The next categories accounted for relatively lower costs ($20 billion dollars and lower) each.</p>
+<p>Again, with the caveat of incompletely reported data, for what has been reported between 1950 and 2011, “TORNADO, HAIL, HIGH WIND” events have cost 101,337 fatalities and injuries, or 65.1 percent of all reported fatalities and injuries in this dataset. All of the other categories represent much smaller fractions of this total, yet the data is unevenly reported.</p>
+<pre class="r"><code>property_crop_damage_years &lt;- StormDataDT_recode_summed_final %&gt;% group_by(EVTYPE) %&gt;% 
+  summarize(Property.and.Crop.Damage.Years = sum(Property.and.Crop.Damage.Final)) %&gt;% 
+  arrange(desc(Property.and.Crop.Damage.Years)) 
+kable(property_crop_damage_years)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">EVTYPE</th>
+<th align="right">Property.and.Crop.Damage.Years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">TORNADO, HAIL, HIGH WIND</td>
+<td align="right">172902.1039</td>
+</tr>
+<tr class="even">
+<td align="left">HEAVY RAIN, FLOODING, MUDSLIDES, LANDSLIDES</td>
+<td align="right">139639.3305</td>
+</tr>
+<tr class="odd">
+<td align="left">HURRICANE SEASON</td>
+<td align="right">119562.4990</td>
+</tr>
+<tr class="even">
+<td align="left">DROUGHT, EXCESSIVE HEAT</td>
+<td align="right">20267.0702</td>
+</tr>
+<tr class="odd">
+<td align="left">THUNDERSTORM</td>
+<td align="right">17115.1903</td>
+</tr>
+<tr class="even">
+<td align="left">WINTER WEATHER</td>
+<td align="right">14978.9730</td>
+</tr>
+<tr class="odd">
+<td align="left">WILDFIRE</td>
+<td align="right">10990.6437</td>
+</tr>
+<tr class="even">
+<td align="left">OTHER</td>
+<td align="right">205.4749</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>fatalities_injuries_years &lt;- StormDataDT_recode_summed_final %&gt;% group_by(EVTYPE) %&gt;% 
+  summarize(Fatalities.and.Injuries.Years = sum(Fatalities.and.Injuries.Final)) %&gt;%
+  arrange(desc(Fatalities.and.Injuries.Years))
+kable(fatalities_injuries_years)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">EVTYPE</th>
+<th align="right">Fatalities.and.Injuries.Years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">TORNADO, HAIL, HIGH WIND</td>
+<td align="right">101337</td>
+</tr>
+<tr class="even">
+<td align="left">THUNDERSTORM</td>
+<td align="right">16323</td>
+</tr>
+<tr class="odd">
+<td align="left">DROUGHT, EXCESSIVE HEAT</td>
+<td align="right">12174</td>
+</tr>
+<tr class="even">
+<td align="left">HEAVY RAIN, FLOODING, MUDSLIDES, LANDSLIDES</td>
+<td align="right">11566</td>
+</tr>
+<tr class="odd">
+<td align="left">WINTER WEATHER</td>
+<td align="right">8207</td>
+</tr>
+<tr class="even">
+<td align="left">OTHER</td>
+<td align="right">2451</td>
+</tr>
+<tr class="odd">
+<td align="left">HURRICANE SEASON</td>
+<td align="right">1917</td>
+</tr>
+<tr class="even">
+<td align="left">WILDFIRE</td>
+<td align="right">1698</td>
+</tr>
+</tbody>
+</table>
+<p>Here is a plot of the otal Property and Crop Damage Caused by Natural Disasters for 1950-2011 for TORNADO, and for 1993-2011 for the other sever categories. The geograhical span of the data includes all U.S. states and territories (Puerto Rico, for example). The values are in $US Millions, and have been adjusted for inflation as 2011 dollars.</p>
+<pre class="r"><code>ggplot(data = StormDataDT_recode_summed_final) +
+  geom_col(mapping = aes(x = year, y = Property.and.Crop.Damage.Final)) + 
+  facet_wrap(~ EVTYPE, nrow = 2) +
+  ggtitle(&quot;Total Property and Crop Damage Caused by Natural Disasters (Source: NOAA)&quot;, 
+          subtitle = &quot;1950-2011 For TORNADO..., 1993-2011 for other Categories, 
+          \n United States and Territories, In $US Millions, Inflation Adjusted (2011 Dollars)&quot;) +
+  ylab(&quot;Total Property and Crop Damage&quot;)</code></pre>
+<p><img src="c5-NOAA_files/figure-html/final-data-plot-property-1.png" width="1152" /></p>
+<p>Here is a plot of the total fatalities and injuries caused by the eight categories of natural disaster in this analysis. The data has bee reported for 1950-2011 for TORNADO…, 1983-2011 for THUNDERSTORMS, and 1993-2011 for other seven categories</p>
+<pre class="r"><code>ggplot(data = StormDataDT_recode_summed_final) +
+  geom_col(mapping = aes(x = year, y = Fatalities.and.Injuries.Final)) + 
+  facet_wrap(~ EVTYPE, nrow = 2) +
+  ggtitle(&quot;Total Fatalities and Injuries Caused by Natural Disasters (Source: NOAA)&quot;, 
+          subtitle = &quot;1950-2011 For TORNADO..., 1983-2011 for THUNDERSTORMS, 1993-2011 for other Categories, 
+          \n United States and Territories&quot;) +
+  ylab(&quot;Total Fatalities and Injuries&quot;)</code></pre>
+<p><img src="c5-NOAA_files/figure-html/final-data-plot-people-1.png" width="1152" /></p>
+<p>The comparable data range for the data in this analysis is the time period 1993-2011. The totals for this time range are shown below. The top two categories for property and crop damage costs are close: HEAVY RAIN, FLOODING, MUDSLIDES, LANDSLIDES at $139.6 billion dollars, and HURRICANE SEASON at $119.6 billion dollars. The third category has also been financially costly, TORNADO, HAIL, HIGH WIND, at $62.2 billion dollars.</p>
+<p>For fatalities and injuries, though, the TORNADO, HAIL, HIGH WIND, at 28,883 has cost more than twice the total number of fatalities and injuries than the nearly equally costly three next categories: THUNDERSTORM at 12734 fatalities and injuries, DROUGHT, EXCESSIVE HEAT at 12174 fatalities and injuries, and HEAVY RAIN, FLOODING, MUDSLIDES, LANDSLIDES at 11566 fatalities and injuries.</p>
+<pre class="r"><code>StormDataDT_recode_since1993_final &lt;- filter(StormDataDT_recode_summed_final, year &gt;= 1993)
+property_crop_damage_years_since1993 &lt;- StormDataDT_recode_since1993_final %&gt;% group_by(EVTYPE) %&gt;% 
+  summarize(Property.and.Crop.Damage.Years = sum(Property.and.Crop.Damage.Final)) %&gt;% 
+  arrange(desc(Property.and.Crop.Damage.Years)) 
+kable(property_crop_damage_years_since1993)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">EVTYPE</th>
+<th align="right">Property.and.Crop.Damage.Years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">HEAVY RAIN, FLOODING, MUDSLIDES, LANDSLIDES</td>
+<td align="right">139639.3305</td>
+</tr>
+<tr class="even">
+<td align="left">HURRICANE SEASON</td>
+<td align="right">119562.4990</td>
+</tr>
+<tr class="odd">
+<td align="left">TORNADO, HAIL, HIGH WIND</td>
+<td align="right">62155.4704</td>
+</tr>
+<tr class="even">
+<td align="left">DROUGHT, EXCESSIVE HEAT</td>
+<td align="right">20267.0702</td>
+</tr>
+<tr class="odd">
+<td align="left">THUNDERSTORM</td>
+<td align="right">17115.1903</td>
+</tr>
+<tr class="even">
+<td align="left">WINTER WEATHER</td>
+<td align="right">14978.9730</td>
+</tr>
+<tr class="odd">
+<td align="left">WILDFIRE</td>
+<td align="right">10990.6437</td>
+</tr>
+<tr class="even">
+<td align="left">OTHER</td>
+<td align="right">205.4749</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>fatalities_injuries_years &lt;- StormDataDT_recode_since1993_final %&gt;% group_by(EVTYPE) %&gt;% 
+  summarize(Fatalities.and.Injuries.Years = sum(Fatalities.and.Injuries.Final)) %&gt;%
+  arrange(desc(Fatalities.and.Injuries.Years))
+kable(fatalities_injuries_years)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">EVTYPE</th>
+<th align="right">Fatalities.and.Injuries.Years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">TORNADO, HAIL, HIGH WIND</td>
+<td align="right">28883</td>
+</tr>
+<tr class="even">
+<td align="left">THUNDERSTORM</td>
+<td align="right">12734</td>
+</tr>
+<tr class="odd">
+<td align="left">DROUGHT, EXCESSIVE HEAT</td>
+<td align="right">12174</td>
+</tr>
+<tr class="even">
+<td align="left">HEAVY RAIN, FLOODING, MUDSLIDES, LANDSLIDES</td>
+<td align="right">11566</td>
+</tr>
+<tr class="odd">
+<td align="left">WINTER WEATHER</td>
+<td align="right">8207</td>
+</tr>
+<tr class="even">
+<td align="left">OTHER</td>
+<td align="right">2451</td>
+</tr>
+<tr class="odd">
+<td align="left">HURRICANE SEASON</td>
+<td align="right">1917</td>
+</tr>
+<tr class="even">
+<td align="left">WILDFIRE</td>
+<td align="right">1698</td>
+</tr>
+</tbody>
+</table>
+<p>And finally, here is the range 1993-2011 for all categories, for property and crop damage. Hurricane Katrina and major floods in the Midwest figure prominently in this cost data.</p>
+<pre class="r"><code>ggplot(data = StormDataDT_recode_since1993_final) +
+  geom_col(mapping = aes(x = year, y = Property.and.Crop.Damage.Final)) + 
+  facet_wrap(~ EVTYPE, nrow = 2) +
+  ggtitle(&quot;Total Property and Crop Damage Caused by Natural Disasters (Source: NOAA)&quot;, 
+          subtitle = &quot;1950-2011 For TORNADO..., 1993-2011 for other Categories, 
+          \n United States and Territories, In $US Millions, Inflation Adjusted (2011 Dollars)&quot;) +
+  ylab(&quot;Total Property and Crop Damage&quot;)</code></pre>
+<p><img src="c5-NOAA_files/figure-html/final-data-plot-property-since1993-1.png" width="1152" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
