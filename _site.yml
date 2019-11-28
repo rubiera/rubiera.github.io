@@ -13,3 +13,7 @@ navbar:
           href: c5-NOAA.html
         - text: "Machine Learning for Workout Activities"
           href: c8-models.html
+        - text: "Leaflet Example"
+          href: leaflet-example.html
+        - text: "Plotly Example"
+          href: c8-models-presentation.html
