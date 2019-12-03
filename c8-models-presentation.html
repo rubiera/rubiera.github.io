@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -781,3 +782,482 @@ $(document).ready(function () {
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Machine Learning Project</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+  <meta name="date" content="2019-11-28" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Machine Learning Project',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Antonio Rubiera' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides>
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">11/28/2019</p>
+          </hgroup>
+  </slide>
+
+<slide class=""><hgroup><h2>Summary of this Analysis</h2></hgroup><article  id="summary-of-this-analysis" class="smaller ">
+
+<p>In this analysis, we evaluate the data used by Velloso et al. in their paper &ldquo;Qualitative Activity Recognition of Weight Lifting Exercises&rdquo; [ACM SIGCHI 2013]. The data was collected for six young men performing weight-lifting exercises with a light dumbbell (1.25 KG) using five pre-determined sequences (named as the variable &lsquo;classe&rsquo; in the dataset). Sequence A is the correct sequence, and sequences B, C, D, and E are variations of the men performing the weigth-lifting exercise incorrectly. Sequences B, C, D, and E are specific ways to perform the weigth-lifting exercise incorrectly, and this means that the four wrong sequences should be just as separable from each other as they are from A.</p>
+
+</article></slide><slide class=""><hgroup><h2>Summary of this Analysis</h2></hgroup><article  id="summary-of-this-analysis-1" class="smaller ">
+
+<p>We use a specific seed (22) to ensure our data runs are reproducible. We perform exploratory data analysis (EDA), caret model selection, and feature selection in an appendix. The steps relegated to an appendix are as follows:</p>
+
+<ul>
+<li>Explore the unaggregated training time series data to get a feel for what movements were performed for each sequence, as captured by the classe variable. We plot a small sample of these.</li>
+<li>Explore the aggregated training time series data after selecting only the rows containing these fileds, and removing fields that contain no data, all zeroes and/or all NA values.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Summary of this Analysis</h2></hgroup><article  id="summary-of-this-analysis-2" class="smaller ">
+
+<ul>
+<li><p>For the aggregated time bin training data, we generate the model accuracy contribution of each feature using the Recursive Feature Elimination (RFE) algorithm. We come up with the features with greater than or equal to 0.75 correlation as features that can be excluded from the classification training algorithms, but none of these fields are found in the test data. Therefore, this selection criteria is not useful in our analysis.</p></li>
+<li><p>For the aggregated time bin training data, and using all predictors found in the training data, we apply four models (Decision Tree, Random Forest, Bagged Trees and SVMpoly-short for Support Vector Machines with polynomial kernel) using the caret package to asses the within sample accuracy of predicting the weight-lifting activities using classe as our response variable. We resample from within the training data to obtain confusion matrix results for each caret model.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Summary of this Analysis</h2></hgroup><article  id="summary-of-this-analysis-3" class="smaller ">
+
+<ul>
+<li><p>For the unaggregated time bin training data, we generate the model accuracy contribution of each feature using the RFE algorithm. We come up with the features with greater than or equal to 0.75 correlation as features that can be excluded from the classification training algorithms. Since some of these fields we want to exclude are found in the test data, we use this knowledge.</p></li>
+<li><p>Finally, within the appendix, and for the unaggregated time bin training data, using all predictors found in the training data, we apply the four models we found to have the highest accuracy and kappa measures (Decision Tree, Random Forest, Bagged Trees and SVMpoly), using the caret package to asses the within sample accuracy of predicting the weight-lifting activities using classe as our response variable. We resample here as well from within the training data to obtain confusion matrix results for each caret model.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Summary of this Analysis</h2></hgroup><article  id="summary-of-this-analysis-4" class="smaller ">
+
+<p>We estimate in-sample error using the model’s accuracy when resampling from within the training data, and out-of-sample error using the model’s accuracy when comparing the training data to the test data. All of the percent accuracy numbers quoted in this summary are for a Random Forest model, and we have the same results for three other models (Decision Tree, Bagged Trees and SVMpoly) in the body of the analysis. The estimates for in-sample error using the model’s accuracy are in the appendix, and the estimates for out-of-sample error using the model’s accuracy are in the three cycles of analysis in the main body of this work.</p>
+
+</article></slide><slide class=""><hgroup><h2>Summary of this Analysis</h2></hgroup><article  id="summary-of-this-analysis-5" class="smaller ">
+
+<p>From the appendix, our in-sample error results for the Random Forest model are:</p>
+
+<ul>
+<li>77.5 percent when using only the time-aggregated predictors.</li>
+<li>84.8 percent when using only the unaggregated predictors, for all fields</li>
+<li>81.8 percent when using only the unaggregated predictors, for all fields minus the highly correlated fields.</li>
+</ul>
+
+<p>After we perform all of the steps previously outlined and contained here in an appendix, we have four caret models we want to apply on the test data in two cycles:</p>
+
+<ul>
+<li>In the first cycle, we use all predictors. We obtain predictions for classe for the 20 events in the test data. We estimate that the out of sample error will be close to the in-sample error (approximately 84.8 percent mean accuracy for a Random Forest model using the unaggregate time data). We find the mean accuracy for a Random Forest model to be 79.3 percent using all predictors.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Summary of this Analysis</h2></hgroup><article  id="summary-of-this-analysis-6" class="smaller ">
+
+<ul>
+<li><p>In the second and cycle, we use only the predictors that have less than 0.75 correlation, based on our cross-validation analysis described in the appendix. We expect the out of sample error will be close to the in-sample error (approximately 81.8 percent mean accuracy for a Random Forest model using the unaggregate time data). We find the mean accuracy for a Random Forest model to be 76.0 percent using only the least-correlated predictors. We expected this accuracy to be higher than the accuracy when using all predictors.</p></li>
+<li><p>In the third and last cycle, We find the mean accuracy for a Random Forest model to be 77.3 using only the top 20 least-correlated predictors. We expected this accuracy to be higher than the accuracy when using all predictors. We subtract one predictor at a time for four additional accuracy measurements and find that the accuracy is 78.8 percent minus one predictor, 76.8 percent minus two predictors, 76.8 percent minus three predictors, and 77.3 percent minus four predictors.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Summary of this Analysis</h2></hgroup><article  id="summary-of-this-analysis-7" class="smaller ">
+
+<p>From these three cycles of analysis, our out-of-sample error results for the Random Forest model are:</p>
+
+<ul>
+<li>79.3 percent when using only the unaggregated predictors, for all fields</li>
+<li>76.0 percent when using only the unaggregated predictors, for all fields minus the highly correlated fields. -Within the range between 76.8 percent and 78.8 percent when using only the top 20 unaggregated predictors, and subtracting one field at a time based on the accuracy results of the top 20 model four times.</li>
+</ul>
+
+<p>We present our conclusion here for the benefit of the Coursera graders. The rest of this analysis has all of the supporting work for this conclusion. We find the in-sample error to be slightly lower than the out-of-sample error. We also find all of the error measurements, using model accuracy as a proxy, to be in the range from the higher 70s percents to the lower 80s percents. Our predictor selection did not change the accuracy results significantly. We attribute this result to a high level of noise in the data, and many missing fields.</p>
+
+<pre class = 'prettyprint lang-r'>library(tidyverse)
+library(caret)
+library(knitr)
+set.seed(22)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Time Series (Not Aggregated over Time) Data</h2></hgroup><article  id="time-series-not-aggregated-over-time-data" class="smaller ">
+
+<p>The training dataset has two types of data: a time series dataset, and time window measurements of this time series data. Here is the time series data. The measurements in this data for sensors located at the belt, arm (glove), forearm, and dumbbell are:</p>
+
+<ul>
+<li>The Euler angles (roll, pitch, yaw)</li>
+<li>Gyroscope measurement (x,y,z)</li>
+<li>Magnetometer measurement (x,y,z)</li>
+<li>Acceleration measurement (x,y,z)</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<pre class = 'prettyprint lang-r'>training_all &lt;- read.csv(&quot;./data/pml-training.csv&quot;)
+training_all_data &lt;- select(training_all, c(&quot;user_name&quot;,
+                            &quot;raw_timestamp_part_1&quot;,&quot;raw_timestamp_part_2&quot;,
+                            &quot;cvtd_timestamp&quot;,&quot;new_window&quot;,&quot;num_window&quot;,&quot;roll_belt&quot;,
+                            &quot;pitch_belt&quot;,&quot;yaw_belt&quot;,&quot;total_accel_belt&quot;,&quot;gyros_belt_x&quot;,
+                            &quot;gyros_belt_y&quot;,&quot;gyros_belt_z&quot;,&quot;accel_belt_x&quot;,&quot;accel_belt_y&quot;,
+                            &quot;accel_belt_z&quot;,&quot;magnet_belt_x&quot;,&quot;magnet_belt_y&quot;,
+                            &quot;magnet_belt_z&quot;,&quot;roll_arm&quot;,&quot;pitch_arm&quot;,&quot;yaw_arm&quot;,
+                            &quot;total_accel_arm&quot;,&quot;gyros_arm_x&quot;,&quot;gyros_arm_y&quot;,
+                            &quot;gyros_arm_z&quot;,&quot;accel_arm_x&quot;,&quot;accel_arm_y&quot;,&quot;accel_arm_z&quot;,
+                            &quot;magnet_arm_x&quot;,&quot;magnet_arm_y&quot;,&quot;magnet_arm_z&quot;,&quot;roll_dumbbell&quot;,
+                            &quot;pitch_dumbbell&quot;,&quot;yaw_dumbbell&quot;,&quot;total_accel_dumbbell&quot;,
+                            &quot;gyros_dumbbell_x&quot;,&quot;gyros_dumbbell_y&quot;,&quot;gyros_dumbbell_z&quot;,
+                            &quot;accel_dumbbell_x&quot;,&quot;accel_dumbbell_y&quot;,&quot;accel_dumbbell_z&quot;,                                                    &quot;magnet_dumbbell_x&quot;,&quot;magnet_dumbbell_y&quot;,&quot;magnet_dumbbell_z&quot;,
+                            &quot;roll_forearm&quot;,&quot;pitch_forearm&quot;,&quot;yaw_forearm&quot;,
+                            &quot;total_accel_forearm&quot;,&quot;gyros_forearm_x&quot;,
+                            &quot;gyros_forearm_y&quot;,&quot;gyros_forearm_z&quot;,&quot;accel_forearm_x&quot;,
+                            &quot;accel_forearm_y&quot;,&quot;accel_forearm_z&quot;,&quot;magnet_forearm_x&quot;,
+                            &quot;magnet_forearm_y&quot;,&quot;magnet_forearm_z&quot;,&quot;classe&quot;))</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>Here are the counts by user_name and classe for the time series data.</p>
+
+<pre class = 'prettyprint lang-r'>kable(table(training_all_data$user_name, training_all_data$classe))</pre>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="left"></th>
+<th align="right">A</th>
+<th align="right">B</th>
+<th align="right">C</th>
+<th align="right">D</th>
+<th align="right">E</th>
+</tr>
+<tr class="odd">
+<td align="left">adelmo</td>
+<td align="right">1165</td>
+<td align="right">776</td>
+<td align="right">750</td>
+<td align="right">515</td>
+<td align="right">686</td>
+</tr>
+<tr class="even">
+<td align="left">carlitos</td>
+<td align="right">834</td>
+<td align="right">690</td>
+<td align="right">493</td>
+<td align="right">486</td>
+<td align="right">609</td>
+</tr>
+<tr class="odd">
+<td align="left">charles</td>
+<td align="right">899</td>
+<td align="right">745</td>
+<td align="right">539</td>
+<td align="right">642</td>
+<td align="right">711</td>
+</tr>
+<tr class="even">
+<td align="left">eurico</td>
+<td align="right">865</td>
+<td align="right">592</td>
+<td align="right">489</td>
+<td align="right">582</td>
+<td align="right">542</td>
+</tr>
+<tr class="odd">
+<td align="left">jeremy</td>
+<td align="right">1177</td>
+<td align="right">489</td>
+<td align="right">652</td>
+<td align="right">522</td>
+<td align="right">562</td>
+</tr>
+<tr class="even">
+<td align="left">pedro</td>
+<td align="right">640</td>
+<td align="right">505</td>
+<td align="right">499</td>
+<td align="right">469</td>
+<td align="right">497</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2>Predicting Classe for the Test Data for all Predictors (First Analysis Cycle)</h2></hgroup><article  id="predicting-classe-for-the-test-data-for-all-predictors-first-analysis-cycle" class="smaller ">
+
+<p>We relegate the explotary data analysis, and running various caret models on resampled training data to an appendix. From this analysis, we determine that four types of models should yield the most accuate results:</p>
+
+<ul>
+<li>Random Forests (method=&ldquo;rf&rdquo; in caret train function)</li>
+<li>Decision Trees (method=&ldquo;C5.0&rdquo; in caret train function)</li>
+<li>Bagged Trees (method=&ldquo;treebag&rdquo; in caret train function)</li>
+<li>SVM Poly, short for Least Squares Support Vector Machines with Polynomial Kernel (method=&ldquo;svmPoly&rdquo; in caret train function)</li>
+</ul>
+
+<p>We run on these four models to make our predictions for which classe was performed for the twenty data records collected in the test data. We first need to select the complete observations fields in the test data to match fields in the training data. We save a copy of all of the non-aggregated columns in the training data (training_nonblanks_cv) for a cross-validation analysis enclosed here as an appendix.</p>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<pre class = 'prettyprint lang-r'>training_all_clean &lt;- read.csv(&quot;./data/pml-training.csv&quot;,
+                               na.strings = c(&quot;NA&quot;,&quot;NaN&quot;,&quot;&quot;,&quot;#DIV/0!&quot;))
+training_nonblanks_clean &lt;- filter(training_all_clean, kurtosis_roll_belt != &quot;&quot;)
+training_nonblanks_clean &lt;- mutate(training_nonblanks_clean, 
+                                   rel_time = as.numeric(paste(raw_timestamp_part_1,
+                                                               raw_timestamp_part_2,sep=&quot;.&quot;)))</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<pre class = 'prettyprint lang-r'>training_nonblanks_clean &lt;- select(training_nonblanks_clean, 
+                c(&quot;roll_belt&quot;, &quot;pitch_belt&quot;, &quot;yaw_belt&quot;, &quot;total_accel_belt&quot;, 
+                &quot;gyros_belt_x&quot;, &quot;gyros_belt_y&quot;, &quot;gyros_belt_z&quot;, &quot;accel_belt_x&quot;,
+                &quot;accel_belt_y&quot;, &quot;accel_belt_z&quot;, &quot;magnet_belt_x&quot;, 
+                &quot;magnet_belt_y&quot;, &quot;magnet_belt_z&quot;, &quot;roll_arm&quot;, &quot;pitch_arm&quot;, &quot;yaw_arm&quot;,
+                &quot;accel_belt_y&quot;, &quot;accel_belt_z&quot;, &quot;magnet_belt_x&quot;, 
+                &quot;magnet_arm_y&quot;, &quot;magnet_arm_z&quot;, &quot;roll_dumbbell&quot;, &quot;pitch_dumbbell&quot;, &quot;yaw_dumbbell&quot;,
+                &quot;total_accel_dumbbell&quot;, &quot;gyros_dumbbell_x&quot;, &quot;gyros_dumbbell_y&quot;,
+                &quot;gyros_dumbbell_z&quot;, &quot;accel_dumbbell_x&quot;, &quot;accel_dumbbell_y&quot;, 
+                &quot;accel_dumbbell_z&quot;, &quot;magnet_dumbbell_x&quot;, &quot;magnet_dumbbell_y&quot;,
+                &quot;magnet_dumbbell_z&quot;, &quot;roll_forearm&quot;, &quot;pitch_forearm&quot;, &quot;yaw_forearm&quot;,
+                &quot;total_accel_forearm&quot;, &quot;gyros_forearm_x&quot;, &quot;gyros_forearm_y&quot;, &quot;gyros_forearm_z&quot;, 
+                &quot;accel_forearm_x&quot;, &quot;accel_forearm_y&quot;,
+                &quot;accel_forearm_z&quot;, &quot;magnet_forearm_x&quot;, &quot;magnet_forearm_y&quot;, 
+                &quot;magnet_forearm_z&quot;, &quot;classe&quot;))</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<pre class = 'prettyprint lang-r'>training_blanks_cv &lt;- select(training_all, c(&quot;roll_belt&quot;,
+                      &quot;pitch_belt&quot;,&quot;yaw_belt&quot;,&quot;total_accel_belt&quot;,&quot;gyros_belt_x&quot;,
+                      &quot;gyros_belt_y&quot;,&quot;gyros_belt_z&quot;,&quot;accel_belt_x&quot;,&quot;accel_belt_y&quot;,
+                      &quot;accel_belt_z&quot;,&quot;magnet_belt_x&quot;,&quot;magnet_belt_y&quot;,
+                      &quot;magnet_belt_z&quot;,&quot;roll_arm&quot;,&quot;pitch_arm&quot;,&quot;yaw_arm&quot;,
+                      &quot;total_accel_arm&quot;,&quot;gyros_arm_x&quot;,&quot;gyros_arm_y&quot;,
+                      &quot;gyros_arm_z&quot;,&quot;accel_arm_x&quot;,&quot;accel_arm_y&quot;,&quot;accel_arm_z&quot;,
+                      &quot;magnet_arm_x&quot;,&quot;magnet_arm_y&quot;,&quot;magnet_arm_z&quot;,&quot;roll_dumbbell&quot;,
+                      &quot;pitch_dumbbell&quot;,&quot;yaw_dumbbell&quot;,&quot;total_accel_dumbbell&quot;,
+                      &quot;gyros_dumbbell_x&quot;,&quot;gyros_dumbbell_y&quot;,&quot;gyros_dumbbell_z&quot;,
+                      &quot;accel_dumbbell_x&quot;,&quot;accel_dumbbell_y&quot;,&quot;accel_dumbbell_z&quot;,
+                      &quot;magnet_dumbbell_x&quot;,&quot;magnet_dumbbell_y&quot;,&quot;magnet_dumbbell_z&quot;,
+                      &quot;roll_forearm&quot;,&quot;pitch_forearm&quot;,&quot;yaw_forearm&quot;,
+                      &quot;total_accel_forearm&quot;,&quot;gyros_forearm_x&quot;,
+                      &quot;gyros_forearm_y&quot;,&quot;gyros_forearm_z&quot;,&quot;accel_forearm_x&quot;,
+                      &quot;accel_forearm_y&quot;,&quot;accel_forearm_z&quot;,&quot;magnet_forearm_x&quot;,
+                      &quot;magnet_forearm_y&quot;,&quot;magnet_forearm_z&quot;,&quot;classe&quot;))</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>Time Series (Not Aggregated over Time) Data Here is the selection of complete observation fields in the test data.</p>
+
+<pre class = 'prettyprint lang-r'>testing_all_clean &lt;- read.csv(&quot;./data/pml-testing.csv&quot;)
+testing_nonblanks_clean &lt;- mutate(testing_all_clean, 
+                                  rel_time = as.numeric(paste(raw_timestamp_part_1,
+                                                              raw_timestamp_part_2,sep=&quot;.&quot;)))</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<pre class = 'prettyprint lang-r'>testing_nonblanks_clean &lt;- select(testing_nonblanks_clean, 
+                        c(&quot;roll_belt&quot;, &quot;pitch_belt&quot;, &quot;yaw_belt&quot;, &quot;total_accel_belt&quot;, 
+                        &quot;gyros_belt_x&quot;, &quot;gyros_belt_y&quot;, &quot;gyros_belt_z&quot;, &quot;accel_belt_x&quot;,
+                        &quot;accel_belt_y&quot;, &quot;accel_belt_z&quot;, &quot;magnet_belt_x&quot;, 
+                        &quot;magnet_belt_y&quot;, &quot;magnet_belt_z&quot;, &quot;roll_arm&quot;, &quot;pitch_arm&quot;, &quot;yaw_arm&quot;,
+                        &quot;accel_belt_y&quot;, &quot;accel_belt_z&quot;, &quot;magnet_belt_x&quot;, 
+                        &quot;magnet_belt_y&quot;, &quot;magnet_belt_z&quot;, &quot;roll_arm&quot;, &quot;pitch_arm&quot;, &quot;yaw_arm&quot;,
+                        &quot;magnet_arm_y&quot;, &quot;magnet_arm_z&quot;, &quot;roll_dumbbell&quot;, &quot;pitch_dumbbell&quot;, &quot;yaw_dumbbell&quot;,
+                        &quot;total_accel_dumbbell&quot;, &quot;gyros_dumbbell_x&quot;, &quot;gyros_dumbbell_y&quot;,
+                        &quot;gyros_dumbbell_z&quot;, &quot;accel_dumbbell_x&quot;, &quot;accel_dumbbell_y&quot;, 
+                        &quot;accel_dumbbell_z&quot;, &quot;magnet_dumbbell_x&quot;, &quot;magnet_dumbbell_y&quot;,
+                        &quot;magnet_dumbbell_z&quot;, &quot;roll_forearm&quot;, &quot;pitch_forearm&quot;, &quot;yaw_forearm&quot;,
+                        &quot;total_accel_forearm&quot;, &quot;gyros_forearm_x&quot;, &quot;gyros_forearm_y&quot;, &quot;gyros_forearm_z&quot;, 
+                        &quot;accel_forearm_x&quot;, &quot;accel_forearm_y&quot;,
+                        &quot;accel_forearm_z&quot;, &quot;magnet_forearm_x&quot;, &quot;magnet_forearm_y&quot;, 
+                         &quot;magnet_forearm_z&quot;, &quot;problem_id&quot;))</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>We setup a resampling control function that we will insert into each model. We use cross validation using a random forest repeated three times.</p>
+
+<pre class = 'prettyprint lang-r'>set.seed(22)
+controlTS &lt;- rfeControl(functions=rfFuncs, method=&quot;repeatedcv&quot;, number=3)</pre>
+
+<p>We find the fields with the highest correlation factor, setting our threshold at 0.75 correlation.</p>
+
+<pre class = 'prettyprint lang-r'>set.seed(22)
+correlationMatrixTS &lt;- cor(training_nonblanks_clean[,1:44], use=&quot;complete.obs&quot;)
+highlyCorrelatedTS75 &lt;- findCorrelation(correlationMatrixTS, cutoff=0.75)
+names(training_nonblanks_clean[,highlyCorrelatedTS75])</pre>
+
+<pre > [1] &quot;accel_belt_z&quot;      &quot;accel_dumbbell_z&quot;  &quot;roll_belt&quot;        
+ [4] &quot;accel_belt_y&quot;      &quot;accel_belt_x&quot;      &quot;total_accel_belt&quot; 
+ [7] &quot;magnet_belt_x&quot;     &quot;accel_dumbbell_y&quot;  &quot;magnet_dumbbell_y&quot;
+[10] &quot;magnet_dumbbell_x&quot; &quot;accel_dumbbell_x&quot;  &quot;accel_forearm_y&quot;  
+[13] &quot;magnet_arm_z&quot;     </pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>We use the data with all predictors to perform feature selection using the rfe function in caret. This function performs a simple backwards selection, known as recursive feature elimination (RFE). It finds the model accuracy and kappa for all predictors, and subtracts each least contributing predictor one at a time for the number of predictors we ask (20) out of all predictors.</p>
+
+<pre class = 'prettyprint lang-r'>set.seed(22)
+resultsTS &lt;- rfe(training_nonblanks_clean[,1:44], 
+                 training_nonblanks_clean$classe, sizes=c(1:20), rfeControl=controlTS)</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<pre class = 'prettyprint lang-r'>print(resultsTS)</pre>
+
+<pre >
+Recursive feature selection
+
+Outer resampling method: Cross-Validated (3 fold, repeated 1 times) 
+
+Resampling performance over subset size:
+
+ Variables Accuracy  Kappa AccuracySD  KappaSD Selected
+         1   0.3561 0.1847   0.020044 0.030534         
+         2   0.5606 0.4446   0.053030 0.065514         
+         3   0.6540 0.5620   0.008748 0.011174         
+         4   0.6869 0.6049   0.024353 0.031322         
+         5   0.7197 0.6470   0.007576 0.008322         
+         6   0.7323 0.6636   0.004374 0.006813         
+         7   0.7348 0.6670   0.053030 0.067660         
+         8   0.7727 0.7145   0.067335 0.084956         
+         9   0.7677 0.7081   0.073580 0.092997         
+        10   0.7652 0.7044   0.045455 0.057634         
+        11   0.7753 0.7168   0.063081 0.080125        *
+        12   0.7727 0.7137   0.040087 0.050924         
+        13   0.7525 0.6882   0.065316 0.082691         
+        14   0.7601 0.6979   0.038876 0.049053         
+        15   0.7652 0.7039   0.053030 0.066897         
+        16   0.7551 0.6914   0.031540 0.040084         
+        17   0.7551 0.6912   0.017495 0.022310         
+        18   0.7475 0.6815   0.024353 0.030997         
+        19   0.7475 0.6815   0.037370 0.047450         
+        20   0.7677 0.7072   0.023144 0.029161         
+        44   0.7374 0.6687   0.050442 0.063300         
+
+The top 5 variables (out of 11):
+   roll_belt, magnet_dumbbell_y, magnet_dumbbell_z, pitch_forearm, magnet_belt_y</pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<p>Here are the most relevant predictors and a plot of the model accuracy (for a Random Forest) as the RFE algorithm subtracts one predictor at a time from the model. By the eight predictor remove, we have model accuracy in the upper 70s percents, where it remains when additional predictors are removed from the model.</p>
+
+<pre class = 'prettyprint lang-r'>set.seed(22)
+predictors(resultsTS)</pre>
+
+<pre > [1] &quot;roll_belt&quot;         &quot;magnet_dumbbell_y&quot; &quot;magnet_dumbbell_z&quot;
+ [4] &quot;pitch_forearm&quot;     &quot;magnet_belt_y&quot;     &quot;roll_dumbbell&quot;    
+ [7] &quot;yaw_belt&quot;          &quot;roll_forearm&quot;      &quot;magnet_belt_z&quot;    
+[10] &quot;accel_dumbbell_y&quot;  &quot;accel_belt_z&quot;     </pre>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<pre class = 'prettyprint lang-r'>plot(resultsTS, type=c(&quot;g&quot;, &quot;o&quot;))</pre>
+
+<p><img src="c8-models-presentation_files/figure-html/presentation%202%20predict-rf-feature-selection-3-1.png" width="720" /></p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
+>>>>>>> 9eaa8ce19f51b58afb4dd65432bfc883fa998081
