@@ -1,0 +1,19 @@
+name: "GitHub Pages"
+navbar:
+  title: "Selected Projects"
+  type: inverse
+  left:
+    - text: "Home"
+      icon: fa-home
+      href: index.html
+    - text: "Coursera R Projects"
+      icon: fa-gear
+      menu:
+        - text: "NOAA Storm Data Analysis"
+          href: c5-NOAA.html
+        - text: "Machine Learning for Workout Activities"
+          href: c8-models.html
+        - text: "Leaflet Example"
+          href: leaflet-example.html
+        - text: "Plotly Example"
+          href: c8-models-plotly.html
