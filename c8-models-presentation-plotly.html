@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Machine Learning</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Machine Learning',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Antonio Rubiera' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <link href="site_libs/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="site_libs/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="site_libs/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="site_libs/ioslides-13.5.1/js/slide-deck.js"></script>
+  <script src="site_libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+  <script src="site_libs/plotly-binding-4.9.1/plotly.js"></script>
+  <script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <link href="site_libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+  <script src="site_libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+  <link href="site_libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+  <script src="site_libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides>
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">12/4/2019</p>
+          </hgroup>
+  </slide>
+
+<slide class=""><hgroup><h2>Summary of this Analysis</h2></hgroup><article  id="summary-of-this-analysis">
+
+<p>In the analysis this presentation is derived from, we evaluate the data used by Velloso et al. in their paper &ldquo;Qualitative Activity Recognition of Weight Lifting Exercises&rdquo; [ACM SIGCHI 2013]. The data was collected for six young men performing weight-lifting exercises with a light dumbbell (1.25 KG) using five pre-determined sequences (named as the variable &lsquo;classe&rsquo; in the dataset).</p>
+
+<p>In this presentation we explore the aggregated training time series data after selecting only the rows containing these fileds, and removing fields that contain no data, all zeroes and/or all NA values.</p>
+
+</article></slide><slide class=""><hgroup><h2>Time Bin Exploratory Data Analysis</h2></hgroup><article  id="time-bin-exploratory-data-analysis">
+
+<p>The relevance of using machine learning for data with many variables is evident when we plot selected variables for the time bin series. There are too many combinations of scatter plots for us to plot and we do not need to. What we need to do is use the functions at our disposal to find the level of correlation between the variables in our data, and subtract those with too high a correlation. We are getting ahead of ourselves with the plots showing below because we will later determine the level of correlation for the variables in our training data, yet it’s worth using that advance knowlegde here to stress the point that the need for a machine learning analysis becomes evident when there is a very large number of correlations that can be calculated from the variables in our data.</p>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article >
+
+<div id="htmlwidget-e5885749dd2b7b3ad064" style="width:720px;height:432px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e5885749dd2b7b3ad064">{"x":{"visdat":{"4ecc52cd723e":["function () ","plotlyVisDat"]},"cur_data":"4ecc52cd723e","attrs":{"4ecc52cd723e":{"x":[13.1942,13.1455,13.2357,71.65,-35.2699,-29.3231,-23.4639,-12.9177,-10.4132,-11.0964,-12.4734,-4.6732,-8.3586,-4.248,-3.4977,4.3351,46.507,44.935,37.6677,14.5975,35.0093,35.0907,41.8304,39.8475,44.4758,60.7805,58.5879,55.9497,52.9749,52.1646,51.7265,57.4331,55.2483,60.6713,11.8579,11.8579,95.7734,16.7994,73.0812,-56.0724,18.0558,-90.1213,70.2263,16.6136,-117.7838,-52.9381,-67.9718,46.8274,46.9874,46.4644,46.7618,48.4622,55.6135,56.3392,55.5803,121.8832,37.2307,41.9338,69.621,88.8559,32.8247,53.1401,93.9914,56.0959,55.6017,66.3358,62.3433,59.3361,57.203,57.0586,56.4793,59.6397,53.973,54.1236,61.4208,-78.3215,-79.1464,-99.645,-64.9732,-62.0627,-89.6267,-39.1543,-60.0308,-49.7571,-11.8846,2.1205,-6.1284,30.766,23.6738,-1.9387,34.7164,54.7649,-35.4948,53.9548,-58.1668,-117.0223,56.5437,-25.9617,35.6425,14.4209,13.5701,13.5713,4.8213,-12.549],"y":[0.1,0.1,0,0.1,0.3,0.3,0.8,0.4,0.5,0.7,0.4,0,0.4,0.5,0.5,0.2,1.1,0.4,0.4,0.8,1,0.6,1.3,1.1,0.3,0.4,0,0.5,0.5,0,0,0.4,0.4,0.5,0.2,0.2,0.4,0.2,0.4,0.3,0.3,0.3,0.4,0.4,0.2,0.2,0.5,0.1,0.1,0.1,0.1,0.1,0.2,0.1,0.1,0.1,0.2,0.1,0.1,0.1,0.2,0.4,0.1,0,0.2,0.1,0.2,0.3,0.4,0.1,0.1,0.2,0,0,0.3,0.5,0.5,3.3,0.7,0.7,0.5,0.8,0.6,0.5,0.6,0.5,0.8,0.7,0.4,0.4,0.4,0,0.5,0.3,0.9,0.5,0.1,0.3,0.1,0.3,0,0.1,0.6635,0],"mode":"markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Avg Roll of the Dumbell (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"yaxis":{"domain":[0,1],"automargin":true,"title":"Std Dev of the Belt Roll (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"title":"Low Correlation Example A sequence","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[13.1942,13.1455,13.2357,71.65,-35.2699,-29.3231,-23.4639,-12.9177,-10.4132,-11.0964,-12.4734,-4.6732,-8.3586,-4.248,-3.4977,4.3351,46.507,44.935,37.6677,14.5975,35.0093,35.0907,41.8304,39.8475,44.4758,60.7805,58.5879,55.9497,52.9749,52.1646,51.7265,57.4331,55.2483,60.6713,11.8579,11.8579,95.7734,16.7994,73.0812,-56.0724,18.0558,-90.1213,70.2263,16.6136,-117.7838,-52.9381,-67.9718,46.8274,46.9874,46.4644,46.7618,48.4622,55.6135,56.3392,55.5803,121.8832,37.2307,41.9338,69.621,88.8559,32.8247,53.1401,93.9914,56.0959,55.6017,66.3358,62.3433,59.3361,57.203,57.0586,56.4793,59.6397,53.973,54.1236,61.4208,-78.3215,-79.1464,-99.645,-64.9732,-62.0627,-89.6267,-39.1543,-60.0308,-49.7571,-11.8846,2.1205,-6.1284,30.766,23.6738,-1.9387,34.7164,54.7649,-35.4948,53.9548,-58.1668,-117.0223,56.5437,-25.9617,35.6425,14.4209,13.5701,13.5713,4.8213,-12.549],"y":[0.1,0.1,0,0.1,0.3,0.3,0.8,0.4,0.5,0.7,0.4,0,0.4,0.5,0.5,0.2,1.1,0.4,0.4,0.8,1,0.6,1.3,1.1,0.3,0.4,0,0.5,0.5,0,0,0.4,0.4,0.5,0.2,0.2,0.4,0.2,0.4,0.3,0.3,0.3,0.4,0.4,0.2,0.2,0.5,0.1,0.1,0.1,0.1,0.1,0.2,0.1,0.1,0.1,0.2,0.1,0.1,0.1,0.2,0.4,0.1,0,0.2,0.1,0.2,0.3,0.4,0.1,0.1,0.2,0,0,0.3,0.5,0.5,3.3,0.7,0.7,0.5,0.8,0.6,0.5,0.6,0.5,0.8,0.7,0.4,0.4,0.4,0,0.5,0.3,0.9,0.5,0.1,0.3,0.1,0.3,0,0.1,0.6635,0],"mode":"markers","type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article >
+
+<div id="htmlwidget-ea7f42af730fb9c73d1e" style="width:720px;height:432px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ea7f42af730fb9c73d1e">{"x":{"visdat":{"4ecc7bc6295d":["function () ","plotlyVisDat"]},"cur_data":"4ecc7bc6295d","attrs":{"4ecc7bc6295d":{"x":[-94.4,-94.3,-94.1,-93.8,1.7,2.3,0.1,-1.4,-2.3,-3.2,-3.3,-3.1,-2.2,-3.5,-4.2,-3.7,172.2,166.4,160.9,-3.3,161.8,163.2,164.3,160.6,161.7,172,172.6,173.4,173.4,173.2,173.5,173.3,172.2,172.2,-87.8,-87.8,-87.5,-87.7,-87.6,-87.4,-87.7,-87.7,-87.7,-88.3,-88.9,-88.7,-89.2,-87.9,-87.9,-87.9,-88.3,-88.1,-88,-88,-88,-94,-93.6,-93.7,-93.7,-93.7,-93.6,-93.2,-93.2,-88.1,-88.3,-87.9,-87.9,-89.1,-88.8,-88.5,-88.4,-88.2,172.7,173,166.7,-1,-12.2,-8,-15.8,-14.1,-13,-10.2,-8.7,-6.7,-2.7,1.2,1.3,2.3,1.4,1.3,0.9,173.1,0.6,-0.8,-12.6,-16.3,-88.1,-87.7,-87.7,-87.6,-87.6,-87.5,-4.4361,-2.093],"y":[-85.3,-85.3,-85.4,-99.8,99.3,111,120.9,111.9,103.4,116.7,96.3,92.4,106,111.1,99.1,92.8,-110.3,-109.2,-111.9,-40.5,-116.3,-114.8,-113.7,-114.2,-108.6,-96.7,-96.2,-100.1,-102.8,-107,-106.1,-98.2,-98.8,-96.4,94.3,94.3,-146.2,-30.3,-5,-14,-23.7,8.4,-12.9,0,-33.2,-34.4,-96.5,-86.1,-85.8,-86.6,-86.2,-84.7,-84.5,-81.3,-81.6,-69.2,-5.8,-120,-30.2,-130.8,6.6,0,-107.3,-80.7,-79.5,-89.8,-82.6,-87.3,-85.8,-89.1,-85.9,-90,-102.4,-102.9,-96.6,51.8,40,-103.8,-25.4,62.8,-132.7,52.2,-43.3,-27.1,86.7,87.4,90,-10.5,69.9,103,-20,-102.4,81.1,0,0,11.1,-80.4,-61.5,-93,57.2,97.6,97.2,99.9,107.9],"mode":"markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Avg Yaw of the Belt (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"yaxis":{"domain":[0,1],"automargin":true,"title":"Min Pitch of the Dumbbell (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"title":"High Correlation Example A sequence","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[-94.4,-94.3,-94.1,-93.8,1.7,2.3,0.1,-1.4,-2.3,-3.2,-3.3,-3.1,-2.2,-3.5,-4.2,-3.7,172.2,166.4,160.9,-3.3,161.8,163.2,164.3,160.6,161.7,172,172.6,173.4,173.4,173.2,173.5,173.3,172.2,172.2,-87.8,-87.8,-87.5,-87.7,-87.6,-87.4,-87.7,-87.7,-87.7,-88.3,-88.9,-88.7,-89.2,-87.9,-87.9,-87.9,-88.3,-88.1,-88,-88,-88,-94,-93.6,-93.7,-93.7,-93.7,-93.6,-93.2,-93.2,-88.1,-88.3,-87.9,-87.9,-89.1,-88.8,-88.5,-88.4,-88.2,172.7,173,166.7,-1,-12.2,-8,-15.8,-14.1,-13,-10.2,-8.7,-6.7,-2.7,1.2,1.3,2.3,1.4,1.3,0.9,173.1,0.6,-0.8,-12.6,-16.3,-88.1,-87.7,-87.7,-87.6,-87.6,-87.5,-4.4361,-2.093],"y":[-85.3,-85.3,-85.4,-99.8,99.3,111,120.9,111.9,103.4,116.7,96.3,92.4,106,111.1,99.1,92.8,-110.3,-109.2,-111.9,-40.5,-116.3,-114.8,-113.7,-114.2,-108.6,-96.7,-96.2,-100.1,-102.8,-107,-106.1,-98.2,-98.8,-96.4,94.3,94.3,-146.2,-30.3,-5,-14,-23.7,8.4,-12.9,0,-33.2,-34.4,-96.5,-86.1,-85.8,-86.6,-86.2,-84.7,-84.5,-81.3,-81.6,-69.2,-5.8,-120,-30.2,-130.8,6.6,0,-107.3,-80.7,-79.5,-89.8,-82.6,-87.3,-85.8,-89.1,-85.9,-90,-102.4,-102.9,-96.6,51.8,40,-103.8,-25.4,62.8,-132.7,52.2,-43.3,-27.1,86.7,87.4,90,-10.5,69.9,103,-20,-102.4,81.1,0,0,11.1,-80.4,-61.5,-93,57.2,97.6,97.2,99.9,107.9],"mode":"markers","type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article >
+
+<div id="htmlwidget-f3405ce571306d14c3fa" style="width:720px;height:432px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f3405ce571306d14c3fa">{"x":{"visdat":{"4ecc2bcb9ea":["function () ","plotlyVisDat"]},"cur_data":"4ecc2bcb9ea","attrs":{"4ecc2bcb9ea":{"x":[-51.8038,-80.2704,-1.8314,-2.4036,-2.4224,4.6955,4.3112,-101.2439,-101.5169,-101.5169,-12.9472,68.2544,64.7123,-75.4316,-92.0585,-97.4528,-92.5764,-114.4985,-128.963,-104.8775,-94.945,59.1598,53.6679,52.647,51.8306,50.9181,55.0076,51.6648,50.2198,53.9001,51.2141,57.7884,52.4436,77.7969,74.7853,54.497,94.8911,42.694,51.2188,55.759,47.9736,58.5405,47.2013,44.4403,46.9096,47.802,42.5145,47.185,47.9932,-94.6092,-108.2528,-105.233,-104.3034,-100.9047,-106.8402,-102.9259,-105.7272,-106.999,-107.407,-106.663,-107.4901,-106.4744,-108.9375,-105.6329,-103.8654,50.5823,-101.5169,-0.3235,-10.5477],"y":[0.5,0.5,0.1,0.5,0.5,0.3,0.2,0.1,0.3,0.3,0.2,0.3,0.4,0.1,0.1,0.3,0.2,0.3,0.3,0.3,0.1,0.2,0.3,0.3,0.4,0.2,0.4,0.2,0.2,0.3,0.2,0.1,0.2,0.1,0.5,0.2,0.5,0,0,0,0.2,0,0.4,0.8,0.5,0.6,0.5,0,0.5,0.5,0.5,0.5,0.3,0,0,0,0.4,0.5,0.1,0.2,0,0.6,0,0.5,0.4,0.2,0.3,0,0.7],"mode":"markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Avg Roll of the Dumbell (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"yaxis":{"domain":[0,1],"automargin":true,"title":"Std Dev of the Belt Roll (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"title":"Low Correlation Example C sequence","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[-51.8038,-80.2704,-1.8314,-2.4036,-2.4224,4.6955,4.3112,-101.2439,-101.5169,-101.5169,-12.9472,68.2544,64.7123,-75.4316,-92.0585,-97.4528,-92.5764,-114.4985,-128.963,-104.8775,-94.945,59.1598,53.6679,52.647,51.8306,50.9181,55.0076,51.6648,50.2198,53.9001,51.2141,57.7884,52.4436,77.7969,74.7853,54.497,94.8911,42.694,51.2188,55.759,47.9736,58.5405,47.2013,44.4403,46.9096,47.802,42.5145,47.185,47.9932,-94.6092,-108.2528,-105.233,-104.3034,-100.9047,-106.8402,-102.9259,-105.7272,-106.999,-107.407,-106.663,-107.4901,-106.4744,-108.9375,-105.6329,-103.8654,50.5823,-101.5169,-0.3235,-10.5477],"y":[0.5,0.5,0.1,0.5,0.5,0.3,0.2,0.1,0.3,0.3,0.2,0.3,0.4,0.1,0.1,0.3,0.2,0.3,0.3,0.3,0.1,0.2,0.3,0.3,0.4,0.2,0.4,0.2,0.2,0.3,0.2,0.1,0.2,0.1,0.5,0.2,0.5,0,0,0,0.2,0,0.4,0.8,0.5,0.6,0.5,0,0.5,0.5,0.5,0.5,0.3,0,0,0,0.4,0.5,0.1,0.2,0,0.6,0,0.5,0.4,0.2,0.3,0,0.7],"mode":"markers","type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article >
+
+<div id="htmlwidget-a01f3732372554889674" style="width:720px;height:432px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a01f3732372554889674">{"x":{"visdat":{"4ecc5b3e350b":["function () ","plotlyVisDat"]},"cur_data":"4ecc5b3e350b","attrs":{"4ecc5b3e350b":{"x":[-1.7,-3.2,-3,-5.4,-5.2,-5.9,-4.8,-89.4,-88.5,-88.3,-88.1,-88.2,-88.4,-91.2,-92.7,-92.9,-92.8,-92.7,-93,-92.8,-93.3,-87.7,-88.1,-88,-88,-87.8,-88,-88,-87.9,-88,-87.9,-87.3,-87.4,-87.9,-88.2,-87.7,166.9,164.4,161.2,161.1,161,161.3,162.2,163.3,165.2,165.3,162,160.4,166.8,-1.9,-1.8,-1.6,-1.4,0.3,1.4,2.1,1.8,1.7,2.9,3.1,3,3.2,2.7,2.8,-1.7,-88.1,-88.2,-5.9,-3],"y":[37.5,28.9,110.8,115.6,102.8,110.5,101.4,-18.4,-38.2,-38.2,-147,-141.8,-134.3,23.1,7.6,6,3.7,-15.4,-17.9,-2.8,7.8,-84.3,-87.7,-88.8,-86,-89.1,-82.5,-88.1,-88.6,-89.6,-88.8,-81.2,-82.8,-76.3,-85.7,-76.6,-96.7,-114.6,-102.3,-98.2,-105.7,-98.1,-104.7,-111.7,-106.7,-106.4,-113.7,-109.3,-108.2,9.5,8.6,13.8,12.3,-13.8,12.1,12.5,5.2,1.5,6,11.3,21.4,3,1.3,4.6,16.7,-87.1,-38.2,104.4,99.2],"mode":"markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Avg Yaw of the Belt (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"yaxis":{"domain":[0,1],"automargin":true,"title":"Min Pitch of the Dumbbell (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"title":"High Correlation Example C sequence","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[-1.7,-3.2,-3,-5.4,-5.2,-5.9,-4.8,-89.4,-88.5,-88.3,-88.1,-88.2,-88.4,-91.2,-92.7,-92.9,-92.8,-92.7,-93,-92.8,-93.3,-87.7,-88.1,-88,-88,-87.8,-88,-88,-87.9,-88,-87.9,-87.3,-87.4,-87.9,-88.2,-87.7,166.9,164.4,161.2,161.1,161,161.3,162.2,163.3,165.2,165.3,162,160.4,166.8,-1.9,-1.8,-1.6,-1.4,0.3,1.4,2.1,1.8,1.7,2.9,3.1,3,3.2,2.7,2.8,-1.7,-88.1,-88.2,-5.9,-3],"y":[37.5,28.9,110.8,115.6,102.8,110.5,101.4,-18.4,-38.2,-38.2,-147,-141.8,-134.3,23.1,7.6,6,3.7,-15.4,-17.9,-2.8,7.8,-84.3,-87.7,-88.8,-86,-89.1,-82.5,-88.1,-88.6,-89.6,-88.8,-81.2,-82.8,-76.3,-85.7,-76.6,-96.7,-114.6,-102.3,-98.2,-105.7,-98.1,-104.7,-111.7,-106.7,-106.4,-113.7,-109.3,-108.2,9.5,8.6,13.8,12.3,-13.8,12.1,12.5,5.2,1.5,6,11.3,21.4,3,1.3,4.6,16.7,-87.1,-38.2,104.4,99.2],"mode":"markers","type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article >
+
+<div id="htmlwidget-5afe980ade539e6f20f1" style="width:720px;height:432px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5afe980ade539e6f20f1">{"x":{"visdat":{"4ecc54586b9d":["function () ","plotlyVisDat"]},"cur_data":"4ecc54586b9d","attrs":{"4ecc54586b9d":{"x":[52.4231,96.307,37.6826,62.2958,95.5504,-110.9328,95.036,-46.6526,-36.2912,-49.9601,4.9814,19.4733,47.9996,13.1238,-87.4581,-36.0602,-38.2308,125.9932,125.9932,125.9932,-94.5943,70.3376,-95.3879,58.2336,-50.0685,-42.6553,103.6032,21.1756,72.4314,-67.4135,-90.045,49.9601,67.1208,56.5345,62.5675,50.4665,59.4087,67.2474,58.7487,56.4459,52.0229,52.581,59.6795,78.5698,68.8692,77.1006,65.0082,85.8312,71.9785,67.7697,62.1523,59.9605,72.6939,61.9229,78.9002,69.7409,40.5496,24.7081,45.4726,83.6576,111.5169,46.1855,107.1908,105.9362,109.7495,-36.9221,-52.9887,-15.8023,-73.5053,-73.1503,-21.5873,-61.252,-28.5072,61.4841,53.0539,-24.4475,36.0778,-11.0247,37.3418],"y":[1.5,4.8,6.9,1,0.4,0.3,7,5.8,5.7,5.7,6.2,6.6,4.8,4.9,0.6,4.7,4.3,10.8,6.9,4.9,4.4,5.1,7.2,6.2,4.7,3.4,8.6,3.6,10.4,1.5,1.5,0.1,0.2,0.3,0.2,0.4,0.5,0.1,0.1,0.1,2.8,6.2,5.1,4.7,5.9,3.4,0.2,0.2,5.4,6.9,7.3,3.5,2.9,5.2,7.7,6.6,5.3,7,6.2,7.7,5.6,3.6,8.6,4.3,3.2,1.9,3.2,1.4,6.3,5,4.8,1.4,0,0.4,0.3,4.6,5.1847,5.1166,4.7532],"mode":"markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Avg Roll of the Dumbell (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"yaxis":{"domain":[0,1],"automargin":true,"title":"Std Dev of the Belt Roll (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"title":"Low Correlation Example E sequence","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[52.4231,96.307,37.6826,62.2958,95.5504,-110.9328,95.036,-46.6526,-36.2912,-49.9601,4.9814,19.4733,47.9996,13.1238,-87.4581,-36.0602,-38.2308,125.9932,125.9932,125.9932,-94.5943,70.3376,-95.3879,58.2336,-50.0685,-42.6553,103.6032,21.1756,72.4314,-67.4135,-90.045,49.9601,67.1208,56.5345,62.5675,50.4665,59.4087,67.2474,58.7487,56.4459,52.0229,52.581,59.6795,78.5698,68.8692,77.1006,65.0082,85.8312,71.9785,67.7697,62.1523,59.9605,72.6939,61.9229,78.9002,69.7409,40.5496,24.7081,45.4726,83.6576,111.5169,46.1855,107.1908,105.9362,109.7495,-36.9221,-52.9887,-15.8023,-73.5053,-73.1503,-21.5873,-61.252,-28.5072,61.4841,53.0539,-24.4475,36.0778,-11.0247,37.3418],"y":[1.5,4.8,6.9,1,0.4,0.3,7,5.8,5.7,5.7,6.2,6.6,4.8,4.9,0.6,4.7,4.3,10.8,6.9,4.9,4.4,5.1,7.2,6.2,4.7,3.4,8.6,3.6,10.4,1.5,1.5,0.1,0.2,0.3,0.2,0.4,0.5,0.1,0.1,0.1,2.8,6.2,5.1,4.7,5.9,3.4,0.2,0.2,5.4,6.9,7.3,3.5,2.9,5.2,7.7,6.6,5.3,7,6.2,7.7,5.6,3.6,8.6,4.3,3.2,1.9,3.2,1.4,6.3,5,4.8,1.4,0,0.4,0.3,4.6,5.1847,5.1166,4.7532],"mode":"markers","type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article >
+
+<div id="htmlwidget-00ec8c25fe218e9c3176" style="width:720px;height:432px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-00ec8c25fe218e9c3176">{"x":{"visdat":{"4ecc4a6d4bc9":["function () ","plotlyVisDat"]},"cur_data":"4ecc4a6d4bc9","attrs":{"4ecc4a6d4bc9":{"x":[-94.3,129.6,129.6,143,158.6,-93.3,-93.2,-92.4,-91.3,-92,-92,-91.5,-92.9,-91.9,-93.3,6.5,10.6,0.6,22,37.5,54.7,55.3,44.8,50.3,41.4,57.6,58.7,56.2,59.4,53.9,51.5,-87.1,-85.9,-87,-88.1,-87.4,-88,-88.6,-88.8,-88.6,-86,-86.3,-81.9,-82.6,-82,-84.4,-87.8,-88.2,145.7,135.4,133.5,132.7,125.8,130.5,130.6,127.9,132.3,129.2,132.5,132,130.5,127.1,127.6,130.1,138.5,13.8,20.5,18.2,18.7,13.9,21.1,17.5,14.2,-87.3,-88.5,16.7,-92.7917,-91.8078,126.8889],"y":[31.6,-97,-129.3,-113.8,-84.1,28.5,12.9,-70.4,-74.7,-85.5,-37.2,6.8,-14.1,-7.2,-88.2,84.9,76.4,14.7,14.7,14.7,-33.1,-135.2,-45.9,-136.7,-88.1,-114.9,-131.4,-127.8,-69.4,-94.6,-67.4,51.9,52.8,60.8,55.7,60.5,58.5,67.7,-75.2,-79.1,-83.2,-80.2,-100.2,-86.8,-92,-81,-96.8,-83.6,-86.9,-94.2,-96.2,-97.3,-92.4,-90.8,-88.7,-109.8,-122,-126.4,-119.1,-125.2,-69.8,-116.2,-96,-85.1,-69.6,77.6,44.5,97.4,43.8,42.2,100.3,47.8,40.5,-87.8,-80.6,85,-16.5,-65.4,-128.2],"mode":"markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Avg Yaw of the Belt (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"yaxis":{"domain":[0,1],"automargin":true,"title":"Min Pitch of the Dumbbell (degrees)","titlefont":{"family":"Courier New, monospace","size":18,"color":"#7f7f7f"}},"title":"High Correlation Example E sequence","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[-94.3,129.6,129.6,143,158.6,-93.3,-93.2,-92.4,-91.3,-92,-92,-91.5,-92.9,-91.9,-93.3,6.5,10.6,0.6,22,37.5,54.7,55.3,44.8,50.3,41.4,57.6,58.7,56.2,59.4,53.9,51.5,-87.1,-85.9,-87,-88.1,-87.4,-88,-88.6,-88.8,-88.6,-86,-86.3,-81.9,-82.6,-82,-84.4,-87.8,-88.2,145.7,135.4,133.5,132.7,125.8,130.5,130.6,127.9,132.3,129.2,132.5,132,130.5,127.1,127.6,130.1,138.5,13.8,20.5,18.2,18.7,13.9,21.1,17.5,14.2,-87.3,-88.5,16.7,-92.7917,-91.8078,126.8889],"y":[31.6,-97,-129.3,-113.8,-84.1,28.5,12.9,-70.4,-74.7,-85.5,-37.2,6.8,-14.1,-7.2,-88.2,84.9,76.4,14.7,14.7,14.7,-33.1,-135.2,-45.9,-136.7,-88.1,-114.9,-131.4,-127.8,-69.4,-94.6,-67.4,51.9,52.8,60.8,55.7,60.5,58.5,67.7,-75.2,-79.1,-83.2,-80.2,-100.2,-86.8,-92,-81,-96.8,-83.6,-86.9,-94.2,-96.2,-97.3,-92.4,-90.8,-88.7,-109.8,-122,-126.4,-119.1,-125.2,-69.8,-116.2,-96,-85.1,-69.6,77.6,44.5,97.4,43.8,42.2,100.3,47.8,40.5,-87.8,-80.6,85,-16.5,-65.4,-128.2],"mode":"markers","type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
